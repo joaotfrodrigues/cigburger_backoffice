@@ -1,1 +1,63 @@
 /* login.css */
+
+:root{
+    --login-bg-page-01: #940101;
+    --login-bg-page-02: #290000;
+
+    --login-bg-box-01: #ffe2bb;
+    --login-bg-box-02: #a18a6f;
+
+    --btn-login-border: #7e634c;
+    --btn-login-hover: #290000;
+
+    --login-link: #290000;
+    --login-link-hover: #b65200;
+}
+
+* {
+    font-family: 'Rajdhani', sans-serif;
+}
+
+.login-page-background {
+    background: radial-gradient(circle at top, var(--login-bg-page-01), var(--login-bg-page-02));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;    
+}
+
+.login-box {
+    width: 400px;
+    background: linear-gradient(to bottom, var(--login-bg-box-01), var(--login-bg-box-02));
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 0 12px 4px rgba(0,0,0,0.5);
+}
+
+.btn-login {
+    text-decoration: none;
+    background: transparent;
+    color: #000;
+    border: 1px solid var(--btn-login-border);
+    box-shadow: 0 0 6px 3px rgba(0,0,0,0.1);
+    padding: 10px;
+    width: 100%;
+    border-radius: 50px;
+    transition: 0.2s ease-in-out;
+}
+
+.btn-login:hover {
+    background: var(--btn-login-hover);
+    color: #fff;
+}
+
+.login-link {
+    text-decoration: none;
+    color: var(--login-link);
+    font-weight: bold;
+    transition: 0.2s ease-in-out;
+}
+
+.login-link:hover {
+    color: var(--login-link-hover);
+}
