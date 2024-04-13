@@ -11,4 +11,9 @@ class Auth extends BaseController
     {
         return view('auth/login_frm');
     }
+
+    public function teste()
+    {
+        return view('teste');
+    }
 }

@@ -20,14 +20,35 @@
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
     <!-- css -->
-    <link rel="stylesheet" href="<?= base_url('assets/css/login.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/main.css') ?>">
 </head>
-<body class="login-page-background">
+<body>
 
-    <!-- render section -->
-    <?= $this->renderSection('content') ?>
+    <!-- top bar -->
+    <?= $this->include('partials/top_bar') ?>
+
+    <section class="d-flex">
+        <!-- main menu -->
+        <nav class="main-menu p-2">
+            <?= $this->include('partials/main_menu') ?>
+        </nav>
+
+        <!-- render section -->
+        <div class="content p-4">
+            <?= $this->renderSection('content') ?>
+        </div>
+    </section>
+
+    <!-- footer -->
+    <?= $this->include('partials/footer') ?>
 
     <!-- bootstrap -->
     <script src="<?= base_url('assets/libs/bootstrap/bootstrap.bundle.min.js') ?>"></script>
+    <script>
+        document.querySelector(".btn-main-menu").addEventListener("click", () => {
+            document.querySelector(".main-menu").classList.toggle("show");
+            document.querySelector(".content").classList.toggle("show");
+        })
+    </script>
 </body>
 </html>
