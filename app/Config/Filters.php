@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Filters\UserIsLoggedIn;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
 use CodeIgniter\Filters\CSRF;
@@ -34,6 +35,7 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+        'userisloggedin' => UserIsLoggedIn::class,
     ];
 
     /**
@@ -51,6 +53,9 @@ class Filters extends BaseFilters
      */
     public array $required = [
         'before' => [
+            'userisloggedin' => [
+                'except' => ['/auth/login_submit', '/auth/logout']
+            ], 
             'forcehttps', // Force Global Secure Requests
             'pagecache',  // Web Page Caching
         ],
