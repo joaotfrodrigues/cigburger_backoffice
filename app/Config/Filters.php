@@ -53,9 +53,6 @@ class Filters extends BaseFilters
      */
     public array $required = [
         'before' => [
-            'userisloggedin' => [
-                'except' => ['/auth/login_submit', '/auth/logout']
-            ], 
             'forcehttps', // Force Global Secure Requests
             'pagecache',  // Web Page Caching
         ],
@@ -74,6 +71,13 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
+            'userisloggedin' => [
+                'except' => [
+                    '/auth/login', 
+                    '/auth/login_submit', 
+                    '/auth/logout'
+                ]
+            ], 
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
