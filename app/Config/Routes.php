@@ -7,3 +7,4 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Auth::index');
 $routes->get('/teste', 'Auth::teste');
+$routes->get('/teste_database', 'Auth::teste_database');

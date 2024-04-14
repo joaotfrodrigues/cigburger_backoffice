@@ -92,3 +92,17 @@ define('EVENT_PRIORITY_NORMAL', 100);
  * @deprecated Use \CodeIgniter\Events\Events::PRIORITY_HIGH instead.
  */
 define('EVENT_PRIORITY_HIGH', 10);
+
+// -------------------------------
+// CUSTOM CONSTANTS
+// -------------------------------
+
+// APP
+define('APP_NAME', 'CigBurger');
+define('APP_VERSION', '1.0.0');
+
+// MYSQL
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'db_cig_burger');
+define('DB_USER', 'user_db_cig_burger');
+define('DB_PASS', 'ren7hICOqosAqu8Es7wagIjuD6KI4o');
