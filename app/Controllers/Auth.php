@@ -75,7 +75,23 @@ class Auth extends BaseController
             return redirect()->back()->withInput()->with('login_error', 'Utilizador ou senha inválidos.');
         }
 
-        dd($user);
+        // set session
+        $restaurant = new RestaurantModel();
+        $restaurant_name = $restaurant->select('name')->find($user->id_restaurant)->name;
+
+        $user_data = [
+            'id' => $user->id,
+            'name' => $user->name,
+            'id_restaurant' => $user->id_restaurant,
+            'restaurant_name' => $restaurant_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'roles' => $user->roles,
+        ];
+
+        session()->set('user', $user_data);
+
+        return redirect()->to('/');
     }
 
     public function logout()

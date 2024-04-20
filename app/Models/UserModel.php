@@ -12,7 +12,7 @@ class UserModel extends Model
     protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['last_login'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -64,6 +64,11 @@ class UserModel extends Model
         if (!password_verify($password, $user->passwrd)) {
             return false;
         }
+
+        // update last login
+        $this->update($user->id, [
+            'last_login' => date('Y-m-d H:i:s')
+        ]);
 
         return $user;
     }
