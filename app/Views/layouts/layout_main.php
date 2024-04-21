@@ -34,7 +34,7 @@
         </nav>
 
         <!-- render section -->
-        <div class="content p-4">
+        <div class="content p-4 flex-fill">
             <?= $this->renderSection('content') ?>
         </div>
     </section>

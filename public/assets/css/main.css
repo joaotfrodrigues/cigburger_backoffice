@@ -25,6 +25,10 @@
     font-family: 'Rajdhani', sans-serif;
 }
 
+body {
+    background-color: var(--content-bg-color);
+}
+
 .top-bar {
     background: var(--top-bar-bg-color);
     color: var(--top-bar-fg-color);
@@ -59,8 +63,9 @@
 .main-menu {
     background: var(--menu-bg-color);
     color: var(--color-white);
-    min-height: 100vh;
+    min-height: calc(100vh - 70px); /* 100vh - 70px from header */
     min-width: 250px;
+    max-width: 250px;
     z-index: 1000;
     transition: transform 0.3s ease;
 }
@@ -95,7 +100,7 @@
     background: var(--color-white);
     color: var(--color-black);
     padding: 20px;
-    margin: 5px;
+    margin: 5px 0;
     border-radius: 5px;
     box-shadow: var(--shadow);
 }
