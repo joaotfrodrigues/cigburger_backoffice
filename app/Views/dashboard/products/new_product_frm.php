@@ -47,7 +47,9 @@
                         <input list="list_categories" name="text_category" id="text_category" class="form-control" placeholder="Categoria" value="<?= old('text_category') ?>">
                         <?= display_error('text_category', $validation_errors) ?>
                         <datalist id="list_categories">
-                            <!-- <option value=""> -->
+                            <?php foreach($categories as $category): ?>
+                                <option value="<?= $category->category ?>">
+                            <?php endforeach; ?>
                         </datalist>
                     </div>
                 </div>

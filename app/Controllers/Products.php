@@ -18,10 +18,19 @@ class Products extends BaseController
 
     public function new_product()
     {
+        // get distinct categories
+        $product_model = new ProductModel();
+
+        $categories = $product_model->where('id_restaurant', session()->user['id_restaurant'])
+                                    ->select('category')
+                                    ->distinct()
+                                    ->findAll();
+
         return view('dashboard/products/new_product_frm', [
             'title' => 'Produtos',
             'page' => 'Novo produto',
-            'validation_errors' => session()->getFlashdata('validation_errors')
+            'validation_errors' => session()->getFlashdata('validation_errors'),
+            'categories' => $categories
         ]);
     }
 
