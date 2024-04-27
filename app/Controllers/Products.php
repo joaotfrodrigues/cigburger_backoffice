@@ -13,7 +13,7 @@ class Products extends BaseController
         //  get products
         $product_model = new ProductModel();
         $products = $product_model->where('id_restaurant', session()->user['id_restaurant'])
-                                  ->findAll();
+            ->findAll();
 
         return view('dashboard/products/index', [
             'title' => 'Produtos',
@@ -22,15 +22,18 @@ class Products extends BaseController
         ]);
     }
 
+    // -------------------------------------------------------------------------
+    // new product
+    // -------------------------------------------------------------------------
     public function new_product()
     {
         // get distinct categories
         $product_model = new ProductModel();
 
         $categories = $product_model->where('id_restaurant', session()->user['id_restaurant'])
-                                    ->select('category')
-                                    ->distinct()
-                                    ->findAll();
+            ->select('category')
+            ->distinct()
+            ->findAll();
 
         return view('dashboard/products/new_product_frm', [
             'title' => 'Produtos',
@@ -127,15 +130,15 @@ class Products extends BaseController
         }
 
         // validates if the image file is not equal to 'no_image.png'
-        if($this->request->getFile('file_image')->getName() === 'no_image.png') {
+        if ($this->request->getFile('file_image')->getName() === 'no_image.png') {
             return redirect()->back()->withInput()->with('validation_errors', ['file_image' => 'O campo imagem do produto é obrigatório']);
         }
 
         // verify if product already exists
         $product_model = new ProductModel();
         $product = $product_model->where('name', $this->request->getPost('text_name'))
-                                 ->where('id_restaurant', session()->user['id_restaurant'])
-                                 ->first();
+            ->where('id_restaurant', session()->user['id_restaurant'])
+            ->first();
 
         if ($product) {
             return redirect()->back()->withInput()->with('validation_errors', ['text_name' => 'Já existe outro produto com o mesmo nome.']);
@@ -166,6 +169,9 @@ class Products extends BaseController
         return redirect()->to('/products');
     }
 
+    // -------------------------------------------------------------------------
+    // edit product
+    // -------------------------------------------------------------------------
     public function edit($id)
     {
         $id = Decrypt($id);
@@ -179,9 +185,9 @@ class Products extends BaseController
 
         // get distinct categories
         $categories = $product_model->where('id_restaurant', session()->user['id_restaurant'])
-                                    ->select('category')
-                                    ->distinct()
-                                    ->findAll();
+            ->select('category')
+            ->distinct()
+            ->findAll();
 
         // check if the product image exists
         if (!file_exists('./assets/images/products/' . $product->image)) {
@@ -190,7 +196,7 @@ class Products extends BaseController
 
         return view('dashboard/products/edit_product_frm', [
             'title' => 'Produtos',
-            'page' => 'Produtos',
+            'page' => 'Editar produto',
             'product' => $product,
             'categories' => $categories,
             'validation_errors' => session()->getFlashdata('validation_errors'),
@@ -268,16 +274,16 @@ class Products extends BaseController
         }
 
         // validates if the image file is not equal to 'no_image.png'
-        if($this->request->getFile('file_image')->getName() === 'no_image.png') {
+        if ($this->request->getFile('file_image')->getName() === 'no_image.png') {
             return redirect()->back()->withInput()->with('validation_errors', ['file_image' => 'O campo imagem do produto é obrigatório']);
         }
-        
+
         // check if the product already exists
         $product_model = new ProductModel();
         $product = $product_model->where('name', $this->request->getPost('text_name'))
-                                 ->where('id_restaurant', session()->user['id_restaurant'])
-                                 ->where('id !=', $id)
-                                 ->first();
+            ->where('id_restaurant', session()->user['id_restaurant'])
+            ->where('id !=', $id)
+            ->first();
         if ($product) {
             return redirect()->back()->withInput()->with('server_error', 'Já existe outro produto com o mesmo nome');
         }
@@ -301,13 +307,62 @@ class Products extends BaseController
 
             // upload image
             $file_image->move(ROOTPATH . 'public/assets/images/products', $final_file_name, true);
-        
+
             // update image
             $data['image'] = $final_file_name;
         }
 
         // update product
         $product_model->update($id, $data);
+
+        // redirect
+        return redirect()->to('/products');
+    }
+
+    // -------------------------------------------------------------------------
+    // delete product// -------------------------------------------------------------------------
+    public function delete($enc_id)
+    {
+        $id = Decrypt($enc_id);
+
+        if (empty($id)) {
+            return redirect()->to('/products');
+        }
+
+        // check if product exists
+        $product_model = new ProductModel();
+        $product = $product_model->find($id);
+
+        if (!$product) {
+            return redirect()->to('/products');
+        }
+
+        // show delete confirmation
+        return view('dashboard/products/delete_product', [
+            'title' => 'Produtos',
+            'page' => 'Eliminar produto',
+            'product' => $product
+        ]);
+    }
+
+    public function delete_confirm($enc_id)
+    {
+        $id = Decrypt($enc_id);
+
+        if (empty($id)) {
+            return redirect()->to('/products');
+        }
+
+        // check if product exists
+        $product_model = new ProductModel();
+        $product = $product_model->find($id);
+
+        if (!$product) {
+            return redirect()->to('/products');
+        }
+
+        // delete product
+        $product_model->delete($id);
 
         // redirect
         return redirect()->to('/products');

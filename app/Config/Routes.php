@@ -23,7 +23,7 @@ $routes->post('/products/edit_submit', 'Products::edit_submit');
 
 // delete product
 $routes->get('/products/delete/(:alphanum)', 'Products::delete/$1');
-$routes->get('/products/delete_confirm/(:alphanum)', 'Products::delete_product_confirm/$1');
+$routes->get('/products/delete_confirm/(:alphanum)', 'Products::delete_confirm/$1');
 
 // stock
 $routes->get('/stocks/product/(:alphanum)', 'Stocks::stock/$1');
