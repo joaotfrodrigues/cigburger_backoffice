@@ -15,3 +15,4 @@ $routes->get('/auth/logout', 'Auth::logout');
 // products
 $routes->get('/products', 'Products::index');
 $routes->get('/products/new', 'Products::new_product');
+$routes->post('/products/new_submit', 'Products::new_submit');
