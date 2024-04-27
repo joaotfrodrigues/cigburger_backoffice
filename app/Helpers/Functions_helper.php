@@ -16,4 +16,13 @@ function display_error($field, $errors)
     }
 }
 
+function calculate_promotion($value, $discount) {
+    if ($discount === 0) {
+        return $value;
+    }
+
+    // round to 2 decimal places
+    return round($value - ($value * $discount ) / 100, 2);
+}
+
 ?>

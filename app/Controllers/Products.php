@@ -10,9 +10,15 @@ class Products extends BaseController
 {
     public function index()
     {
+        //  get products
+        $product_model = new ProductModel();
+        $products = $product_model->where('id_restaurant', session()->user['id_restaurant'])
+                                  ->findAll();
+
         return view('dashboard/products/index', [
             'title' => 'Produtos',
-            'page' => 'Produtos'
+            'page' => 'Produtos',
+            'products' => $products,
         ]);
     }
 
@@ -152,5 +158,41 @@ class Products extends BaseController
 
         // redirect
         return redirect()->to('/products');
+    }
+
+    public function edit($id)
+    {
+        $id = Decrypt($id);
+        if (empty($id)) {
+            return redirect()->to('/products');
+        }
+
+        // get product data
+        $product_model = new ProductModel();
+        $product = $product_model->find($id);
+
+        // get distinct categories
+        $categories = $product_model->where('id_restaurant', session()->user['id_restaurant'])
+                                    ->select('category')
+                                    ->distinct()
+                                    ->findAll();
+
+        // check if the product image exists
+        if (!file_exists('./assets/images/products/' . $product->image)) {
+            $product->image = 'no_image.png';
+        }
+
+        return view('dashboard/products/edit_product_frm', [
+            'title' => 'Produtos',
+            'page' => 'Produtos',
+            'product' => $product,
+            'categories' => $categories,
+            'validation_errors' => session()->getFlashdata('validation_errors')
+        ]);
+    }
+
+    public function edit_submit()
+    {
+        echo 'edit product';
     }
 }
