@@ -15,8 +15,10 @@ class StockModel extends Model
     protected $allowedFields    = [
         'id_product',
         'stock_quantity',
+        'stock_in_out',
         'stock_supplier',
         'reason',
+        'movement_date',
         'created_at',
         'updated_at'
     ];
@@ -50,4 +52,17 @@ class StockModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function getStocksSupplier($id_restaurant)
+    {
+        // get distinct suppliers within stocks table that belongs to the id restaurant
+        return $this->db->table('stocks')
+            ->distinct()
+            ->select('stocks.stock_supplier')
+            ->join('products', 'products.id = stocks.id_product')
+            ->where('products.id_restaurant', $id_restaurant)
+            ->where('stocks.stock_in_out', 'IN')
+            ->get()
+            ->getResult();
+    }
 }

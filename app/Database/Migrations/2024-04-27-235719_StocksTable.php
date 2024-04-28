@@ -39,6 +39,10 @@ class StocksTable extends Migration
                 'constraint' => 255,
                 'null' => true,
             ],
+            'movement_date' => [
+                'type' => 'DATETIME',
+                'null' => true
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => true,

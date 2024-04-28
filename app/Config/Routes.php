@@ -28,3 +28,5 @@ $routes->get('/products/delete_confirm/(:alphanum)', 'Products::delete_confirm/$
 // stock
 $routes->get('/stocks', 'Stocks::index');
 $routes->get('/stocks/product/(:alphanum)', 'Stocks::stock/$1');
+$routes->get('/stocks/add/(:alphanum)', 'Stocks::add/$1');
+$routes->post('/stocks/add_submit', 'Stocks::add_submit');

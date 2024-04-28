@@ -19,6 +19,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
+    <!-- flatpickr -->
+    <link rel="stylesheet" href="<?= base_url('assets/libs/flatpickr/flatpickr.min.css') ?>">
+
     <!-- css -->
     <link rel="stylesheet" href="<?= base_url('assets/css/main.css') ?>">
 </head>
@@ -44,11 +47,16 @@
 
     <!-- bootstrap -->
     <script src="<?= base_url('assets/libs/bootstrap/bootstrap.bundle.min.js') ?>"></script>
+    
+    <!-- flatpickr -->
+    <script src="<?= base_url('assets/libs/flatpickr/flatpickr.min.js') ?>"></script>
+    
     <script>
         document.querySelector(".btn-main-menu").addEventListener("click", () => {
             document.querySelector(".main-menu").classList.toggle("show");
             document.querySelector(".content").classList.toggle("show");
         })
     </script>
+    
 </body>
 </html>

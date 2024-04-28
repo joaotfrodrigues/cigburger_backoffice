@@ -64,7 +64,8 @@ class SetupDatabase extends BaseCommand
             'RestaurantsSeeder',
             'UsersSeeder',
             'ProductsSeeder',
-            'ProductsSeeder_Rest_00001'
+            'ProductsSeeder_Rest_00001',
+            'StocksSeeder'
         ];        
 
         // Loop through each seed and run it
