@@ -86,7 +86,74 @@ class Stocks extends BaseController
         $products_model->where('id', $id_product)
             ->set('stock', 'stock + ' . intval($text_stock), false)
             ->update();
-        
+
+        return redirect()->to('/stocks');
+    }
+
+    public function remove($enc_id)
+    {
+        $id = Decrypt($enc_id);
+
+        if (empty($id)) {
+            return redirect()->to('/stocks');
+        }
+
+        // load product
+        $products_model = new ProductModel();
+        $product = $products_model->find($id);
+
+        return view('dashboard/stocks/remove_frm', [
+            'title' => 'Stock',
+            'page' => 'Remover stock',
+            'product' => $product,
+            'validation_errors' => session()->getFlashdata('validation_errors'),
+            'server_error' => session()->getFlashdata('server_error')
+        ]);
+    }
+
+    public function remove_submit()
+    {
+        // form validation
+        $validation = $this->validate($this->_stock_remove_form_validation());
+        if (!$validation) {
+            return redirect()->back()->withInput()->with('validation_errors', $this->validator->getErrors());
+        }
+
+        // check if id_producti is valid
+        $id_product = Decrypt($this->request->getPost('id_product'));
+        if (empty($id_product)) {
+            return redirect()->back()->withInput()->with('server_error', 'Ocorreu um erro. Tente novamente');
+        }
+
+        // get post data
+        $text_stock = $this->request->getPost('text_stock');
+        $text_reason = $this->request->getPost('text_reason');
+        $text_date = $this->request->getPost('text_date');
+
+        // check if stock is available
+        $products_model = new ProductModel();
+        $product = $products_model->find($id_product);
+
+        if ($product->stock < intval($text_stock)) {
+            return redirect()->back()->withInput()->with('server_error', 'O stock atual é inferior à quantidade que pretende remover');
+        }
+
+        // store stock movement
+        $stocks_model = new StockModel();
+        $stocks_model->insert([
+            'id_product' => $id_product,
+            'stock_quantity' => intval($text_stock),
+            'stock_in_out' => 'OUT',
+            'stock_supplier' => 'Owner',
+            'reason' => $text_reason,
+            'movement_date' => $text_date
+        ]);
+
+        // increment product stock
+        $products_model->where('id', $id_product)
+            ->set('stock', 'stock - ' . intval($text_stock), false)
+            ->update();
+
         return redirect()->to('/stocks');
     }
 
@@ -111,6 +178,34 @@ class Stocks extends BaseController
                 'rules' => 'required',
                 'errors' => [
                     'required' => 'O campo {field} é obrigatório.',
+                ]
+            ],
+            // text_reason not required
+            'text_date' => [
+                'label' => 'Data do movimento',
+                'rules' => 'required|valid_date[Y-m-d H:i]',
+                'errors' => [
+                    'required' => 'O campo {field} é obrigatório.',
+                    'valid_date' => 'O campo {field} deve conter uma data válida (Y-m-d H:i)'
+                ]
+            ]
+        ];
+    }
+
+    private function _stock_remove_form_validation()
+    {
+        // stock form validation rules
+        return [
+            'id_product' => [
+                'rules' => 'required'
+            ],
+            'text_stock' => [
+                'label' => 'Quantidade',
+                'rules' => 'required|numeric|greater_than[0]',
+                'errors' => [
+                    'required' => 'O campo {field} é obrigatório.',
+                    'numeric' => 'O campo {field} deve conter apenas números.',
+                    'greater_than' => 'O campo {field} deve conter um valor maior que {param}'
                 ]
             ],
             // text_reason not required
