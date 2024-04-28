@@ -171,3 +171,9 @@ body {
 }
 
 .overflow-hidden { overflow: hidden; }
+
+/* stocks */
+.stock-image {
+    max-width: 100px;
+    max-height: 100px;
+}

@@ -83,9 +83,6 @@ class UsersSeeder extends Seeder
         ];
 
         // insert users
-        $this->db->table('users')
-                 ->insertBatch($users);
-
-        echo PHP_EOL . count($users) . ' utilizadores introduzidos' . PHP_EOL;
+        $this->db->table('users')->insertBatch($users);
     }
 }

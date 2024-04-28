@@ -34,9 +34,6 @@ class RestaurantsSeeder extends Seeder
         ];
 
         // insert restaurants
-        $this->db->table('restaurants')
-                 ->insertBatch($restaurants);
-
-        echo PHP_EOL . count($restaurants) . ' restaurantes introduzidos' . PHP_EOL;
+        $this->db->table('restaurants')->insertBatch($restaurants);
     }
 }

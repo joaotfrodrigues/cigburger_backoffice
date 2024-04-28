@@ -63,7 +63,8 @@ class SetupDatabase extends BaseCommand
         $seeds = [
             'RestaurantsSeeder',
             'UsersSeeder',
-            'ProductsSeeder'
+            'ProductsSeeder',
+            'ProductsSeeder_Rest_00001'
         ];        
 
         // Loop through each seed and run it
