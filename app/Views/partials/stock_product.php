@@ -32,8 +32,8 @@
 
         <div class="col-12 text-end">
             <a href="<?= site_url('/stocks/add/' . Encrypt($product->id)) ?>" class="btn btn-sm btn-outline-success px-3 m-1"><i class="fa-regular fa-square-plus me-3"></i>Adicionar Stock</a>
-            <a href="<?= site_url('/stocks/remove/' . Encrypt($product->id)) ?>" class="btn btn-sm btn-outline-danger px-3 m-1"><i class="fa-regular fa-square-minus me-3"></i>Eliminar Stock</a>
-            <a href="#" class="btn btn-sm btn-outline-secondary px-3 m-1"><i class="fa fa-solid fa-right-left me-3"></i>Entradas e Saídas</a>
+            <a href="<?= site_url('/stocks/remove/' . Encrypt($product->id)) ?>" class="btn btn-sm btn-outline-danger px-3 m-1"><i class="fa-regular fa-square-minus me-3"></i>Remover Stock</a>
+            <a href="<?= site_url('/stocks/movements/' . Encrypt($product->id)) ?>" class="btn btn-sm btn-outline-secondary px-3 m-1"><i class="fa fa-solid fa-right-left me-3"></i>Entradas e Saídas</a>
         </div>
     </div>
 </div>

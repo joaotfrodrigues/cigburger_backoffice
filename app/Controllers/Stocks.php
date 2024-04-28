@@ -23,6 +23,9 @@ class Stocks extends BaseController
         ]);
     }
 
+    // -------------------------------------------------------------------------
+    // add stock
+    // -------------------------------------------------------------------------
     public function add($enc_id)
     {
         $id = Decrypt($enc_id);
@@ -90,6 +93,9 @@ class Stocks extends BaseController
         return redirect()->to('/stocks');
     }
 
+    // -------------------------------------------------------------------------
+    // remove stock
+    // -------------------------------------------------------------------------
     public function remove($enc_id)
     {
         $id = Decrypt($enc_id);
@@ -157,6 +163,33 @@ class Stocks extends BaseController
         return redirect()->to('/stocks');
     }
 
+    // -------------------------------------------------------------------------
+    // stock movements
+    // -------------------------------------------------------------------------
+    public function movements($enc_id)
+    {
+        $id = Decrypt($enc_id);
+
+        if (empty($id)) {
+            return redirect()->to('/stocks');
+        }
+
+        // load product
+        $products_model = new ProductModel();
+        $product = $products_model->find($id);
+
+        return view('dashboard/stocks/movements', [
+            'title' => 'Stock',
+            'page' => 'Movimentos de stock',
+            'product' => $product,
+            'datatables' => true,
+            'movements' => $this->_stock_movements($id)
+        ]);
+    }
+
+    // -------------------------------------------------------------------------
+    // private methods
+    // -------------------------------------------------------------------------
     private function _stock_add_form_validation()
     {
         // stock form validation rules
@@ -218,5 +251,18 @@ class Stocks extends BaseController
                 ]
             ]
         ];
+    }
+
+    private function _stock_movements($id_product, $filters = [])
+    {
+        // load product stock movements with 10000 records limit
+        $stocks_model = new StockModel();
+        $movements = $stocks_model->where('id_product', $id_product)
+            ->orderBy('movement_date', 'DESC')
+            ->findAll(10000);
+        
+        // filters goes here
+
+        return $movements;
     }
 }

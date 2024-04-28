@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,10 +22,15 @@
 
     <!-- flatpickr -->
     <link rel="stylesheet" href="<?= base_url('assets/libs/flatpickr/flatpickr.min.css') ?>">
+    
+    <?php if (!empty($datatables)) : ?>
+        <link rel="stylesheet" href="<?= base_url('assets/libs/datatables/datatables.min.css') ?>">
+    <?php endif; ?>
 
     <!-- css -->
     <link rel="stylesheet" href="<?= base_url('assets/css/main.css') ?>">
 </head>
+
 <body>
 
     <!-- top bar -->
@@ -47,16 +53,22 @@
 
     <!-- bootstrap -->
     <script src="<?= base_url('assets/libs/bootstrap/bootstrap.bundle.min.js') ?>"></script>
-    
+
     <!-- flatpickr -->
     <script src="<?= base_url('assets/libs/flatpickr/flatpickr.min.js') ?>"></script>
-    
+
+    <?php if (!empty($datatables)) : ?>
+        <script src="<?= base_url('assets/libs/datatables/jquery/jquery.min.js') ?>"></script>
+        <script src="<?= base_url('assets/libs/datatables/datatables.min.js') ?>"></script>
+    <?php endif; ?>
+
     <script>
         document.querySelector(".btn-main-menu").addEventListener("click", () => {
             document.querySelector(".main-menu").classList.toggle("show");
             document.querySelector(".content").classList.toggle("show");
         })
     </script>
-    
+
 </body>
+
 </html>
