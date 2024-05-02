@@ -166,7 +166,7 @@ class Stocks extends BaseController
     // -------------------------------------------------------------------------
     // stock movements
     // -------------------------------------------------------------------------
-    public function movements($enc_id)
+    public function movements($enc_id, $filter = null)
     {
         $id = Decrypt($enc_id);
 
@@ -178,12 +178,18 @@ class Stocks extends BaseController
         $products_model = new ProductModel();
         $product = $products_model->find($id);
 
+        // get distinct suppliers within stocks table that belongs to this restaurant
+        $stocks_model = new StockModel();
+        $stock_suppliers = $stocks_model->getStocksSupplier(session()->user['id_restaurant']);
+
         return view('dashboard/stocks/movements', [
             'title' => 'Stock',
             'page' => 'Movimentos de stock',
             'product' => $product,
             'datatables' => true,
-            'movements' => $this->_stock_movements($id)
+            'movements' => $this->_stock_movements($id, $filter),
+            'stock_suppliers' => $stock_suppliers,
+            'filter' => empty($filter) ? '' : Decrypt($filter)
         ]);
     }
 
@@ -253,15 +259,41 @@ class Stocks extends BaseController
         ];
     }
 
-    private function _stock_movements($id_product, $filters = [])
+    private function _stock_movements($id_product, $filter)
     {
         // load product stock movements with 10000 records limit
         $stocks_model = new StockModel();
-        $movements = $stocks_model->where('id_product', $id_product)
-            ->orderBy('movement_date', 'DESC')
-            ->findAll(10000);
-        
-        // filters goes here
+        $movements = [];
+
+        $filter = Decrypt($filter);
+
+        // filters       
+        switch ($filter) {
+            case '':
+                $movements = $stocks_model->where('id_product', $id_product)
+                    ->orderBy('movement_date', 'DESC')
+                    ->findAll(10000);
+                break;
+            case 'IN':
+                $movements = $stocks_model->where('id_product', $id_product)
+                    ->where('stock_in_out', 'IN')
+                    ->orderBy('movement_date', 'DESC')
+                    ->findAll(10000);
+                break;
+            case 'OUT':
+                $movements = $stocks_model->where('id_product', $id_product)
+                    ->where('stock_in_out', 'OUT')
+                    ->orderBy('movement_date', 'DESC')
+                    ->findAll(10000);
+                break;
+            case substr($filter, 0, 6) === 'stksup':
+                $supplier = substr($filter, 7);
+                $movements = $stocks_model->where('id_product', $id_product)
+                    ->where('stock_supplier', $supplier)
+                    ->orderBy('movement_date', 'DESC')
+                    ->findAll(10000);
+                break;
+        }
 
         return $movements;
     }
