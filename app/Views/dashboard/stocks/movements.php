@@ -55,6 +55,11 @@
                             </optgroup>
                         </select>
                     </div>
+                    <div class="col text-end">
+                        <a href="<?= site_url('/stocks/export_csv/' . Encrypt($product->id)) ?>" class="btn btn-sm btn-outline-secondary px-3 m-1">
+                            <i class="fa-solid fa-download me-2"></i>Exportar para CSV
+                        </a>
+                    </div>
                 </div>
             </div>
 

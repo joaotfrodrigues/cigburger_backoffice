@@ -193,6 +193,43 @@ class Stocks extends BaseController
         ]);
     }
 
+    public function export_csv($enc_id)
+    {
+        $id = Decrypt($enc_id);
+
+        if (empty($id)) {
+            return redirect()->to('/stocks');
+        }
+
+        // get stock movements for this product and export them to CSV
+        $stocks_model = new StockModel();
+        $movements = $stocks_model->where('id_product', $id)
+            ->orderBy('movement_date', 'DESC')
+            ->findAll();
+
+        // download CSV file with stock movements
+        $this->response->setHeader('Content-Type', 'text/csv');
+        $this->response->setHeader('Content-Disposition', 'attachment; filename="movimentos.csv"');
+
+        $output = fopen('php://output', 'w');
+
+        // header
+        fputcsv($output, ['Data do movimento', 'Quantidade', 'Operação', 'Fornecedor', 'Observações']);
+
+        // data
+        foreach($movements as $movement) {
+            fputcsv($output, [
+                $movement->movement_date,
+                $movement->stock_quantity,
+                $movement->stock_in_out,
+                $movement->stock_supplier,
+                $movement->reason,
+            ]);
+        }
+
+        fclose($output);
+    }
+
     // -------------------------------------------------------------------------
     // private methods
     // -------------------------------------------------------------------------
