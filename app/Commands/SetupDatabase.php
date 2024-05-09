@@ -65,6 +65,7 @@ class SetupDatabase extends BaseCommand
             'UsersSeeder',
             'ProductsSeeder',
             'ProductsSeeder_Rest_00001',
+            'ProductsSeeder_Rest_00002',
             'StocksSeeder'
         ];        
 

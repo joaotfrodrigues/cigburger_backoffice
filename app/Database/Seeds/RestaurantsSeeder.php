@@ -23,13 +23,6 @@ class RestaurantsSeeder extends Seeder
                 'phone' => '990000200',
                 'email' => 'restaurante_2@gmail.com',
                 'created_at' => date('Y-m-d H:i:s')
-            ],
-            [
-                'name' => 'Restaurante 3',
-                'address' => 'Rua do Restaurante 3',
-                'phone' => '990000300',
-                'email' => 'restaurante_3@gmail.com',
-                'created_at' => date('Y-m-d H:i:s')
             ]
         ];
 
