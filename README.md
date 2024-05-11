@@ -2,7 +2,9 @@
 
 ## What is this?
 
-This is my version from the cigburger backoffice project built in the course "[2024] CodeIgniter 4 - 3 large PROFESSIONAL projects united by APIs | MVC | PHP8 | MySQL | All about one structure!" (This is only a third of the course project, check CigKitchen and CigRequest in my profile)
+This is my version from the cigburger backoffice project built in the course "[2024] CodeIgniter 4 - 3 large PROFESSIONAL projects united by APIs | MVC | PHP8 | MySQL | All about one structure!"
+
+This is only a third of the course project, check CigKitchen and CigRequest in my profile
 
 ## Setup the enviroment
 
