@@ -109,3 +109,7 @@ define('DB_PASS', 'ren7hICOqosAqu8Es7wagIjuD6KI4o');
 
 // ENCRYPTION KEY
 define('ENCRYPTION_KEY', 'pQa50gITVuVZpFXDRXrB7xzhXIrx3LLU');
+
+// API
+define('API_ACTIVE', true);
+define('API_VERSION', '1.0.0');

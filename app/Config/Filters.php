@@ -75,7 +75,8 @@ class Filters extends BaseFilters
                 'except' => [
                     '/auth/login', 
                     '/auth/login_submit', 
-                    '/auth/logout'
+                    '/auth/logout',
+                    '/api/*'
                 ]
             ], 
             // 'honeypot',
