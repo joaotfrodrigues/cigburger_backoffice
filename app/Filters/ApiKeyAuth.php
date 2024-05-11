@@ -66,7 +66,7 @@ class ApiKeyAuth implements FilterInterface
         } catch (\Exception $e) {
             // if the hash key is invalid, return a 404 Unauthorized response
             $response = new ApiResponse();
-            echo $response->set_response_error(401, $e->getMessage());
+            echo $response->set_response_error(401, 'Unauthorized request');
             die(1);
         }
     }

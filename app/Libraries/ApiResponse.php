@@ -22,42 +22,48 @@ class ApiResponse
         }
     }
 
-    public function set_response($status = 200, $message = 'success', $data = [])
+    public function set_response($status = 200, $message = 'success', $data = [], $project_id = null)
     {
+        response()->setContentType('application/json');
         return json_encode([
             'status' => $status,
             'message' => $message,
             'info' => [
                 'version' => API_VERSION,
                 'datetime' => date('Y-m-d H:i:s'),
-                'timestamp' => time()
+                'timestamp' => time(),
+                'project_id' => $project_id
             ],
             'data' => $data
         ], JSON_PRETTY_PRINT);
     }
 
-    public function set_response_error($status = 404, $message = 'error')
+    public function set_response_error($status = 404, $message = 'error', $project_id = null)
     {
+        response()->setContentType('application/json');
         return json_encode([
             'status' => $status,
             'message' => $message,
             'info' => [
                 'version' => API_VERSION,
                 'datetime' => date('Y-m-d H:i:s'),
-                'timestamp' => time()
+                'timestamp' => time(),
+                'project_id' => $project_id
             ]
         ], JSON_PRETTY_PRINT);
     }
 
     private function _api_not_active()
     {
+        response()->setContentType('application/json');
         return json_encode([
             'status' => 400,
             'message' => 'API is not active',
             'info' => [
                 'version' => API_VERSION,
                 'datetime' => date('Y-m-d H:i:s'),
-                'timestamp' => time()
+                'timestamp' => time(),
+                'project_id' => null
             ]
         ], JSON_PRETTY_PRINT);
     }

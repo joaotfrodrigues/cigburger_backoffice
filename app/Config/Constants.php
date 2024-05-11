@@ -113,3 +113,4 @@ define('ENCRYPTION_KEY', 'pQa50gITVuVZpFXDRXrB7xzhXIrx3LLU');
 // API
 define('API_ACTIVE', true);
 define('API_VERSION', '1.0.0');
+define('API_DEBUG_LEVEL', 0); // 0 = do not send error messages | 1 = send error messages
