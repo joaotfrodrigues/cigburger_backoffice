@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Filters\ApiKeyAuth;
 use App\Filters\UserIsLoggedIn;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
@@ -36,6 +37,7 @@ class Filters extends BaseFilters
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
         'userisloggedin' => UserIsLoggedIn::class,
+        'apiauth'    => ApiKeyAuth::class
     ];
 
     /**
@@ -73,12 +75,12 @@ class Filters extends BaseFilters
         'before' => [
             'userisloggedin' => [
                 'except' => [
-                    '/auth/login', 
-                    '/auth/login_submit', 
+                    '/auth/login',
+                    '/auth/login_submit',
                     '/auth/logout',
                     '/api/*'
                 ]
-            ], 
+            ],
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
@@ -114,5 +116,11 @@ class Filters extends BaseFilters
      *
      * @var array<string, array<string, list<string>>>
      */
-    public array $filters = [];
+    public array $filters = [
+        'apiauth' => [
+            'before' => [
+                '/api/*'
+            ]
+        ]
+    ];
 }
