@@ -12,7 +12,7 @@ This is my version of the CigBurger backoffice project built in the course "[202
 1. Create a database called "db_cig_burger".
 2. Create a user called "user_db_cig_burger" with the password "ren7hICOqosAqu8Es7wagIjuD6KI4o".
 3. Open the terminal in your local development environment and run the following command to set up the database structure and populate it:
-#
+
 ```bash
 php spark setup:database
 ```
