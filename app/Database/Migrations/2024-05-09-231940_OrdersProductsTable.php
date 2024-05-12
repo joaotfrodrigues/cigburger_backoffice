@@ -6,6 +6,13 @@ use CodeIgniter\Database\Migration;
 
 class OrdersProductsTable extends Migration
 {
+    /**
+     * Creates the 'order_products' table.
+     * 
+     * This method defines the structure of the 'order_products' table, including columns for storing order product information such as ID, order ID, product ID, price per unit, quantity, and timestamps for creation, update, and soft deletion.
+     * 
+     * @return void
+     */
     public function up()
     {
         // create table order_products
@@ -59,6 +66,13 @@ class OrdersProductsTable extends Migration
         $this->forge->createTable('order_products');
     }
 
+    /**
+     * Drops the 'order_products' table.
+     * 
+     * This method removes the 'order_products' table from the database, reverting the changes made during the migration.
+     * 
+     * @return void
+     */
     public function down()
     {
         // drop table

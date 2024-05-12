@@ -4,6 +4,12 @@ namespace App\Libraries;
 
 class ApiResponse
 {
+    /**
+     * Constructor function for the APIResponse class.
+     * Checks if the API is active and terminates script if not.
+     * 
+     * @return void
+     */
     public function __construct()
     {
         // check if API is active
@@ -13,6 +19,13 @@ class ApiResponse
         }
     }
 
+    /**
+     * Validates the request method against the specified method.
+     *
+     * @param string $method The expected request method (e.g., 'GET', 'POST').
+     * 
+     * @return void
+     */
     public function validate_request($method)
     {
         // validate request method
@@ -22,6 +35,16 @@ class ApiResponse
         }
     }
 
+    /**
+     * Sets the API response structure.
+     *
+     * @param int    $status      The HTTP status code (default: 200).
+     * @param string $message     The response message (default: 'success').
+     * @param array  $data        The response data (default: []).
+     * @param mixed  $project_id  The project ID associated with the response (default: null).
+     *
+     * @return string The JSON-encoded API response.
+     */
     public function set_response($status = 200, $message = 'success', $data = [], $project_id = null)
     {
         response()->setContentType('application/json');
@@ -38,6 +61,15 @@ class ApiResponse
         ], JSON_PRETTY_PRINT);
     }
 
+    /**
+     * Sets the API response structure for an error.
+     *
+     * @param int    $status      The HTTP status code (default: 404).
+     * @param string $message     The error message (default: 'error').
+     * @param mixed  $project_id  The project ID associated with the error (default: null).
+     *
+     * @return string The JSON-encoded API error response.
+     */
     public function set_response_error($status = 404, $message = 'error', $project_id = null)
     {
         response()->setContentType('application/json');
@@ -53,6 +85,11 @@ class ApiResponse
         ], JSON_PRETTY_PRINT);
     }
 
+    /**
+     * Generates the API response for an inactive API.
+     *
+     * @return string The JSON-encoded API response indicating that the API is not active.
+     */
     private function _api_not_active()
     {
         response()->setContentType('application/json');

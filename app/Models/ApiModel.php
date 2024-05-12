@@ -10,11 +10,24 @@ class ApiModel extends Model
 {
     private $project_id;
 
+    /**
+     * Constructs a new instance of the API model with the specified project ID.
+     *
+     * @param mixed $project_id The project ID associated with the API model.
+     */
     public function __construct($project_id)
     {
         $this->project_id = $project_id;
     }
 
+    /**
+     * Handles SQL errors and generates appropriate API responses.
+     * 
+     * If API_DEBUG_LEVEL is 1, detailed error messages are included in the response.
+     * If API_DEBUG_LEVEL is 0, a generic error message is included in the response.
+     *
+     * @param \Exception $error The SQL error object.
+     */
     private function _sql_error($error)
     {
         if (API_DEBUG_LEVEL) {
@@ -26,6 +39,18 @@ class ApiModel extends Model
         }
     }
 
+    /**
+     * Retrieves details of the restaurant, including main information, categories, and products.
+     * 
+     * This method connects to the database and retrieves various details related to the restaurant,
+     * such as its main information, categories of products available, and the list of products offered.
+     * It queries the database using the provided project ID to filter results based on the specific project.
+     * 
+     * @throws \CodeIgniter\Database\Exceptions\DatabaseException If an SQL error occurs during database queries.
+     * 
+     * @return array|null An array containing restaurant details, categories, and products,
+     *                    or null in case of an SQL error.
+     */
     public function get_restaurant_details()
     {
         try {

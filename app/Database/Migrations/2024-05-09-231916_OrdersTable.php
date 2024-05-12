@@ -6,6 +6,13 @@ use CodeIgniter\Database\Migration;
 
 class OrdersTable extends Migration
 {
+    /**
+     * Creates the 'orders' table.
+     * 
+     * This method defines the structure of the 'orders' table, including columns for storing order information such as ID, restaurant ID, order number, order date, order status, and timestamps for creation, update, and soft deletion.
+     * 
+     * @return void
+     */
     public function up()
     {
         // create order table
@@ -57,6 +64,13 @@ class OrdersTable extends Migration
         $this->forge->createTable('orders');
     }
 
+    /**
+     * Drops the 'orders' table.
+     * 
+     * This method removes the 'orders' table from the database, reverting the changes made during the migration.
+     * 
+     * @return void
+     */
     public function down()
     {
         // drop table

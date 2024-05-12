@@ -6,6 +6,13 @@ use CodeIgniter\Database\Seeder;
 
 class RestaurantsSeeder extends Seeder
 {
+    /**
+     * Seeds the 'restaurants' table with fake data.
+     * 
+     * This method populates the 'restaurants' table with fake data for two restaurants. Each restaurant entry includes details such as name, address, phone number, email, and creation timestamp.
+     * 
+     * @return void
+     */
     public function run()
     {
         // create restaurants fake data

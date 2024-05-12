@@ -6,6 +6,14 @@ use CodeIgniter\Database\Migration;
 
 class RestaurantsTable extends Migration
 {
+    /**
+     * Creates the 'restaurants' table.
+     * 
+     * This method defines the structure of the 'restaurants' table, including fields like name, address, phone, and email.
+     * It sets the primary key and creates the table in the database.
+     * 
+     * @return void
+     */
     public function up()
     {
         // create restaurants table fields
@@ -52,6 +60,13 @@ class RestaurantsTable extends Migration
         $this->forge->createTable('restaurants');
     }
 
+    /**
+     * Drops the 'restaurants' table.
+     * 
+     * This method removes the 'restaurants' table from the database.
+     * 
+     * @return void
+     */
     public function down()
     {
         $this->forge->dropTable('restaurants');

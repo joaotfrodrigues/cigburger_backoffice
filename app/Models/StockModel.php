@@ -53,6 +53,16 @@ class StockModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    /**
+     * Retrieves distinct suppliers from the stocks table for a specific restaurant.
+     * 
+     * This method retrieves distinct suppliers from the stocks table that belong to the provided restaurant ID.
+     * It performs an inner join with the products table to ensure that the stocks are associated with products
+     * from the specified restaurant. Only stocks with 'IN' movement are considered.
+     * 
+     * @param int $id_restaurant The ID of the restaurant.
+     * @return array An array containing distinct suppliers' names.
+     */
     public function getStocksSupplier($id_restaurant)
     {
         // get distinct suppliers within stocks table that belongs to the id restaurant

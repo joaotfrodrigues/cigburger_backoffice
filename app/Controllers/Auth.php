@@ -9,6 +9,16 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class Auth extends BaseController
 {
+    /**
+     * Displays the login form.
+     * 
+     * This method is responsible for displaying the login form to the user. It loads
+     * the list of restaurants from the database using the RestaurantModel class. It then
+     * renders the login form view along with any validation errors or login errors stored
+     * in the session flash data.
+     * 
+     * @return View The login form view containing the list of restaurants and any validation errors.
+     */
     public function login()
     {
         // load restaurants
@@ -24,6 +34,20 @@ class Auth extends BaseController
         ]);
     }
 
+    /**
+     * Processes the login form submission.
+     * 
+     * This method handles the submission of the login form. It first validates the form
+     * data, including the username, password, and selected restaurant, using the validation
+     * rules defined. If validation fails, it redirects back to the login form with the
+     * validation errors and input data preserved. If validation succeeds, it verifies
+     * the login credentials with the UserModel class. If the credentials are valid,
+     * it sets the user data in the session and redirects to the home page. If the credentials
+     * are invalid, it redirects back to the login form with a login error message.
+     * 
+     * @return RedirectResponse Redirects to the home page on successful login, or back to the
+     *                         login form with validation errors or a login error message.
+     */
     public function login_submit()
     {
         // form validation
@@ -94,6 +118,14 @@ class Auth extends BaseController
         return redirect()->to('/');
     }
 
+    /**
+     * Logs out the user and destroys the session.
+     * 
+     * This method logs out the user by destroying the session, effectively logging
+     * the user out of the system. It then redirects the user to the login page.
+     * 
+     * @return RedirectResponse Redirects to the login page after logging out.
+     */
     public function logout()
     {
         session()->destroy();

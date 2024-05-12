@@ -6,6 +6,14 @@ use CodeIgniter\Database\Migration;
 
 class StocksTable extends Migration
 {
+    /**
+     * Creates the 'stocks' table.
+     * 
+     * This method defines the structure of the 'stocks' table, including fields like id_product, stock_quantity,stock_in_out, and others.
+     * It allows for tracking stock movements such as incoming or outgoing quantities, along with details like supplier and reason for the movement.
+     * 
+     * @return void
+     */
     public function up()
     {
         // Create stocks table
@@ -64,6 +72,13 @@ class StocksTable extends Migration
         $this->forge->createTable('stocks');
     }
 
+    /**
+     * Drops the 'stocks' table.
+     * 
+     * This method removes the 'stocks' table from the database.
+     * 
+     * @return void
+     */
     public function down()
     {
         // Drop stocks table

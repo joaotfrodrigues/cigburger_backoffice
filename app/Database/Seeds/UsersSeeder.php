@@ -6,6 +6,13 @@ use CodeIgniter\Database\Seeder;
 
 class UsersSeeder extends Seeder
 {
+    /**
+     * Seeds the 'users' table with fake data.
+     * 
+     * This method populates the 'users' table with fake data for users associated with different restaurants. It includes details such as restaurant ID, username, hashed password, user's name, email, phone number, roles, activation status, and creation timestamp.
+     * 
+     * @return void
+     */
     public function run()
     {
         // create users fake data

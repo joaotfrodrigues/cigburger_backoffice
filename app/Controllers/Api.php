@@ -9,6 +9,20 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class Api extends BaseController
 {
+    /**
+     * Creates API credentials for a project.
+     * 
+     * This function generates API credentials for a project by accepting a project ID
+     * and API key as parameters. It first checks if the parameters are valid and then
+     * displays the project ID, API key, and hashed API key. It then generates encrypted
+     * credentials using the Encrypter service provided by CodeIgniter and displays the
+     * encrypted data as a hexadecimal string.
+     * 
+     * @param string $project_id The project ID for which API credentials are to be created.
+     * @param string $api_key The API key to be associated with the project.
+     * 
+     * @return void
+     */
     public function create_api_credentials($project_id, $api_key)
     {
         if (empty($project_id) || empty($api_key)) {
@@ -32,6 +46,15 @@ class Api extends BaseController
         echo $encrypted_data;
     }
 
+    /**
+     * Retrieves the project ID from the API credentials provided in the request header.
+     * 
+     * This function extracts the project ID from the API credentials provided in the
+     * request header. It decrypts the credentials using the Encrypter service provided
+     * by CodeIgniter, extracts the project ID from the decrypted data, and returns it.
+     * 
+     * @return string|null The project ID extracted from the API credentials, or null if not found.
+     */
     private function _get_project_id()
     {
         $header_credentials = $this->request->getHeaderLine('X-API-CREDENTIALS');
@@ -46,6 +69,16 @@ class Api extends BaseController
     // API METHODS
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Retrieves the API status.
+     * 
+     * This API method retrieves the status of the API. It first validates the request
+     * method to ensure it's a GET request. Then, it generates a response using the ApiResponse
+     * class, setting the status code to 200 and the message to 'success'. Additional data
+     * can be included in the response, such as the project ID retrieved from the API credentials.
+     * 
+     * @return array The API response containing the status information.
+     */
     public function api_status()
     {
         $response = new ApiResponse();
@@ -53,6 +86,19 @@ class Api extends BaseController
         return $response->set_response(200, 'success', [], $this->_get_project_id());
     }
 
+    /**
+     * Retrieves restaurant details from the CigBurger API.
+     * 
+     * This API method retrieves detailed information about the restaurant from the
+     * CigBurger API. It first validates the request method to ensure it's a GET request.
+     * Then, it initializes an instance of the ApiModel class with the project ID retrieved
+     * from the API credentials. It calls the `get_restaurant_details` method of the ApiModel
+     * class to fetch the restaurant details. Finally, it generates a response using the
+     * ApiResponse class, setting the status code to 200, the message to 'success', and
+     * including the retrieved restaurant details in the response.
+     * 
+     * @return array The API response containing the restaurant details.
+     */
     public function get_restaurant_details()
     {
         $response = new ApiResponse();

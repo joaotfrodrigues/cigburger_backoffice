@@ -6,9 +6,16 @@ use CodeIgniter\Database\Seeder;
 
 class ProductsSeeder_Rest_00002 extends Seeder
 {
+    /**
+     * Seeds the 'products' table with data for restaurant 2.
+     * 
+     * This method populates the 'products' table with data for various food items and beverages available at restaurant 2. Each product entry includes details such as name, description, category, price, availability, stock, and an image. The data also includes timestamps for creation.
+     * 
+     * @return void
+     */
     public function run()
     {
-        // Create all products from restaurant 1
+        // Create all products from restaurant 2
         $data = [
             [
                 'id_restaurant' => 2,

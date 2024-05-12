@@ -6,6 +6,13 @@ use CodeIgniter\Database\Seeder;
 
 class StocksSeeder extends Seeder
 {
+    /**
+     * Seeds the 'stocks' table with fake data.
+     * 
+     * This method populates the 'stocks' table with fake data for stock movements of various products. It includes both incoming and outgoing stock movements, with details such as product ID, stock quantity, stock in/out status, supplier, reason for movement, movement date, and creation timestamp.
+     * 
+     * @return void
+     */
     public function run()
     {
         // add fake data to stocks table

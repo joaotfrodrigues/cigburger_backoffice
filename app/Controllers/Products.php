@@ -8,6 +8,15 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class Products extends BaseController
 {
+    /**
+     * Displays the products page in the dashboard.
+     * 
+     * This method retrieves the products associated with the current restaurant from the database
+     * using the ProductModel class. It then renders the products index view in the dashboard,
+     * passing the title, page name, and retrieved products data to the view.
+     * 
+     * @return View The products index view containing the products associated with the current restaurant.
+     */
     public function index()
     {
         //  get products
@@ -22,9 +31,20 @@ class Products extends BaseController
         ]);
     }
 
-    // -------------------------------------------------------------------------
-    // new product
-    // -------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------------
+    // NEW PRODUCT
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Displays the form for adding a new product in the dashboard.
+     * 
+     * This method retrieves distinct categories associated with the current restaurant's products
+     * from the database using the ProductModel class. It then renders the form for adding a new product
+     * within the dashboard interface, passing the title, page name, validation errors (if any), and
+     * distinct categories to the view.
+     * 
+     * @return View The form for adding a new product within the dashboard.
+     */
     public function new_product()
     {
         // get distinct categories
@@ -43,6 +63,20 @@ class Products extends BaseController
         ]);
     }
 
+    /**
+     * Processes the submission of a new product form.
+     * 
+     * This method handles the submission of the form for adding a new product. It first validates
+     * the form data, including the product image, name, description, category, price, promotion,
+     * initial stock, and minimum stock limit. If validation fails, it redirects back to the form
+     * with the validation errors and input data preserved. If validation succeeds, it checks if
+     * the product already exists and then uploads the product image to the server. Finally, it
+     * prepares the data for insertion into the database, inserts the product data, and redirects
+     * to the products page.
+     * 
+     * @return RedirectResponse Redirects to the products page after successfully adding a new product,
+     *                          or back to the form with validation errors if submission fails.
+     */
     public function new_submit()
     {
         // form validation
@@ -169,9 +203,23 @@ class Products extends BaseController
         return redirect()->to('/products');
     }
 
-    // -------------------------------------------------------------------------
-    // edit product
-    // -------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------------
+    // EDIT PRODUCT
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Displays the form for editing a product in the dashboard.
+     * 
+     * This method retrieves the data of the product with the given ID from the database
+     * using the ProductModel class. It also retrieves distinct categories associated with
+     * the current restaurant's products. If the product image does not exist, it sets the
+     * image to a default placeholder. It then renders the form for editing the product in
+     * the dashboard, passing the title, page name, product data, distinct categories,
+     * validation errors (if any), and server errors (if any) to the view.
+     * 
+     * @param string $id The encrypted ID of the product to edit.
+     * @return View The form for editing the product in the dashboard.
+     */
     public function edit($id)
     {
         $id = Decrypt($id);
@@ -204,6 +252,20 @@ class Products extends BaseController
         ]);
     }
 
+    /**
+     * Processes the submission of an edited product form.
+     * 
+     * This method handles the submission of the form for editing a product. It first validates
+     * the form data, including the product name, description, category, price, promotion, and
+     * minimum stock limit. If validation fails, it redirects back to the form with the validation
+     * errors and input data preserved. If validation succeeds, it checks if the product ID is valid,
+     * then checks if the product already exists with the edited name. It prepares the data for
+     * updating the product, including handling changes to the product image. Finally, it updates
+     * the product data in the database and redirects to the products page.
+     * 
+     * @return RedirectResponse Redirects to the products page after successfully editing a product,
+     *                          or back to the form with validation errors or server errors if submission fails.
+     */
     public function edit_submit()
     {
         // form validation
@@ -319,8 +381,22 @@ class Products extends BaseController
         return redirect()->to('/products');
     }
 
-    // -------------------------------------------------------------------------
-    // delete product// -------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------------
+    // DELETE PRODUCT
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Displays the confirmation page for deleting a product in the dashboard.
+     * 
+     * This method decrypts the encrypted ID of the product to be deleted and checks if it's valid.
+     * If the ID is empty or the product does not exist, it redirects to the products page. Otherwise,
+     * it retrieves the product data from the database using the ProductModel class and renders the
+     * confirmation page for deleting the product, passing the title, page name, and product data to
+     * the view.
+     * 
+     * @param string $enc_id The encrypted ID of the product to be deleted.
+     * @return View The confirmation page for deleting the product in the dashboard.
+     */
     public function delete($enc_id)
     {
         $id = Decrypt($enc_id);
@@ -345,6 +421,18 @@ class Products extends BaseController
         ]);
     }
 
+    /**
+     * Confirms the deletion of a product in the dashboard.
+     * 
+     * This method decrypts the encrypted ID of the product to be deleted and checks if it's valid.
+     * If the ID is empty or the product does not exist, it redirects to the products page. Otherwise,
+     * it deletes the product from the database using the ProductModel class and redirects to the
+     * products page.
+     * 
+     * @param string $enc_id The encrypted ID of the product to be deleted.
+     * @return RedirectResponse Redirects to the products page after successfully deleting the product,
+     *                          or back to the products page if the product does not exist or the ID is invalid.
+     */
     public function delete_confirm($enc_id)
     {
         $id = Decrypt($enc_id);

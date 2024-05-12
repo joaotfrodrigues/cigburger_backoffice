@@ -44,6 +44,20 @@ class UserModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    /**
+     * Verifies user login credentials.
+     * 
+     * This method verifies the login credentials provided by the user against the database records.
+     * It checks if the username, restaurant ID, and other conditions are met to authenticate the user.
+     * If the user is found and the password matches the hashed password stored in the database,
+     * the method updates the last login timestamp and returns the user object.
+     * 
+     * @param string $username The username of the user.
+     * @param string $password The password of the user.
+     * @param int $id_restaurant The ID of the restaurant associated with the user.
+     * 
+     * @return mixed Returns the user object if authentication is successful, otherwise returns false.
+     */
     public function login_verify($username, $password, $id_restaurant)
     {
         // where clauses

@@ -6,6 +6,14 @@ use CodeIgniter\Database\Migration;
 
 class ProductsTable extends Migration
 {
+    /**
+     * Creates the 'products' table.
+     * 
+     * This method defines the structure of the 'products' table, including fields like name, description, category, price, availability, and others.
+     * It sets default values for certain fields and creates the table in the database.
+     * 
+     * @return void
+     */
     public function up()
     {
         $this->forge->addField([
@@ -92,6 +100,13 @@ class ProductsTable extends Migration
         $this->forge->createTable('products');
     }
 
+    /**
+     * Drops the 'products' table.
+     * 
+     * This method removes the 'products' table from the database.
+     * 
+     * @return void
+     */
     public function down()
     {
         // drop table

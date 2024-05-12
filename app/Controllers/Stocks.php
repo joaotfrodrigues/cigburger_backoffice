@@ -9,6 +9,15 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class Stocks extends BaseController
 {
+    /**
+     * Displays the stock management page in the dashboard.
+     * 
+     * This method retrieves all products associated with the current restaurant from the database
+     * using the ProductModel class and renders the stock management page in the dashboard. It passes
+     * the title, page name, and list of products to the view.
+     * 
+     * @return View The stock management page in the dashboard.
+     */
     public function index()
     {
         // load all products
@@ -23,9 +32,23 @@ class Stocks extends BaseController
         ]);
     }
 
-    // -------------------------------------------------------------------------
-    // add stock
-    // -------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------------
+    // ADD STOCK
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Renders the form for adding stock to a product in the dashboard.
+     * 
+     * This method decrypts the encrypted ID of the product for which stock is to be added and
+     * checks if it's valid. If the ID is empty, it redirects to the stocks page. Otherwise, it
+     * retrieves the distinct suppliers within the stocks table that belong to the current restaurant
+     * using the StockModel class. It also loads the product details from the database using the
+     * ProductModel class. Finally, it renders the form for adding stock, passing the title, page name,
+     * product details, list of stock suppliers, and any validation errors or server errors to the view.
+     * 
+     * @param string $enc_id The encrypted ID of the product for which stock is to be added.
+     * @return View The form for adding stock to a product in the dashboard.
+     */
     public function add($enc_id)
     {
         $id = Decrypt($enc_id);
@@ -52,6 +75,19 @@ class Stocks extends BaseController
         ]);
     }
 
+    /**
+     * Processes the submission of the form for adding stock to a product in the dashboard.
+     * 
+     * This method validates the form submission based on the defined validation rules using the
+     * _stock_add_form_validation helper method. If validation fails, it redirects back to the add
+     * stock form with the input data and validation errors. Otherwise, it retrieves the decrypted ID
+     * of the product from the form data and checks if it's valid. If the ID is empty, it redirects
+     * back with a server error message. Otherwise, it stores the stock movement in the database using
+     * the StockModel class and increments the product stock using the ProductModel class. Finally, it
+     * redirects to the stocks page.
+     * 
+     * @return Redirect Redirects to the stocks page after processing the form submission.
+     */
     public function add_submit()
     {
         // form validation
@@ -93,9 +129,21 @@ class Stocks extends BaseController
         return redirect()->to('/stocks');
     }
 
-    // -------------------------------------------------------------------------
-    // remove stock
-    // -------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------------
+    // REMOVE STOCK
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Renders the page for removing stock from a product in the dashboard.
+     * 
+     * This method decrypts the provided ID of the product to be removed from the stock.
+     * If the ID is empty, it redirects to the stocks page. Otherwise, it loads the product
+     * information using the ProductModel class and renders the remove stock form view, passing
+     * necessary data such as the product details, validation errors, and server errors.
+     * 
+     * @param string $enc_id The encrypted ID of the product whose stock is to be removed.
+     * @return View|Redirect Renders the remove stock page or redirects to the stocks page if the ID is empty.
+     */
     public function remove($enc_id)
     {
         $id = Decrypt($enc_id);
@@ -117,6 +165,20 @@ class Stocks extends BaseController
         ]);
     }
 
+    /**
+     * Handles the submission of the form to remove stock from a product in the dashboard.
+     * 
+     * This method validates the form input using the _stock_remove_form_validation method.
+     * If validation fails, it redirects back to the remove stock page with input data and validation errors.
+     * It then checks if the decrypted ID of the product is valid. If not, it redirects back with a server error message.
+     * The method retrieves post data such as the stock quantity, reason, and date.
+     * It checks if the requested stock quantity to remove is available in the product's current stock.
+     * If the requested quantity exceeds the available stock, it redirects back with a server error message.
+     * Otherwise, it stores the stock movement in the StockModel and updates the product stock quantity accordingly.
+     * Finally, it redirects to the stocks page.
+     * 
+     * @return Redirect Redirects to the stocks page after successfully removing stock or redirects back with errors.
+     */
     public function remove_submit()
     {
         // form validation
@@ -163,9 +225,24 @@ class Stocks extends BaseController
         return redirect()->to('/stocks');
     }
 
-    // -------------------------------------------------------------------------
-    // stock movements
-    // -------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------------
+    // STOCK MOVEMENTS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Renders the stock movements page for a specific product in the dashboard.
+     * 
+     * This method decrypts the ID of the product.
+     * If the decrypted ID is empty, it redirects to the stocks page.
+     * It then loads the product data using the ProductModel.
+     * Next, it retrieves distinct suppliers within the stocks table that belong to the current restaurant.
+     * The method renders the movements view with data including the product and uses DataTables for displaying the movements from the product stock.
+     * 
+     * @param string $enc_id The encrypted ID of the product.
+     * @param string|null $filter The optional filter parameter for filtering stock movements.
+     * 
+     * @return View Renders the movements view with the required data.
+     */
     public function movements($enc_id, $filter = null)
     {
         $id = Decrypt($enc_id);
@@ -193,6 +270,18 @@ class Stocks extends BaseController
         ]);
     }
 
+    /**
+     * Exports the stock movements for a specific product to a CSV file.
+     * 
+     * This method decrypts the ID of the product.
+     * If the decrypted ID is empty, it redirects to the stocks page.
+     * It then retrieves stock movements for the specified product and exports them to a CSV file.
+     * The CSV file contains columns for the movement date, quantity, operation, supplier, and observations.
+     * 
+     * @param string $enc_id The encrypted ID of the product.
+     * 
+     * @return void Downloads a CSV file with the stock movements.
+     */
     public function export_csv($enc_id)
     {
         $id = Decrypt($enc_id);
@@ -217,7 +306,7 @@ class Stocks extends BaseController
         fputcsv($output, ['Data do movimento', 'Quantidade', 'Operação', 'Fornecedor', 'Observações']);
 
         // data
-        foreach($movements as $movement) {
+        foreach ($movements as $movement) {
             fputcsv($output, [
                 $movement->movement_date,
                 $movement->stock_quantity,
@@ -230,9 +319,22 @@ class Stocks extends BaseController
         fclose($output);
     }
 
-    // -------------------------------------------------------------------------
-    // private methods
-    // -------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------------
+    // PRIVATE FUNCTIONS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Defines the form validation rules for adding stock.
+     * 
+     * This method returns an array of validation rules for adding stock.
+     * It specifies rules for the product ID, stock quantity, supplier, and movement date.
+     * The product ID must be provided and numeric.
+     * The stock quantity must be provided, numeric, and greater than zero.
+     * The supplier must be provided.
+     * The movement date must be provided and in a valid date format (Y-m-d H:i).
+     * 
+     * @return array The form validation rules for adding stock.
+     */
     private function _stock_add_form_validation()
     {
         // stock form validation rules
@@ -268,6 +370,17 @@ class Stocks extends BaseController
         ];
     }
 
+    /**
+     * Defines the form validation rules for removing stock.
+     * 
+     * This method returns an array of validation rules for removing stock.
+     * It specifies rules for the product ID, stock quantity, and movement date.
+     * The product ID must be provided and numeric.
+     * The stock quantity must be provided, numeric, and greater than zero.
+     * The movement date must be provided and in a valid date format (Y-m-d H:i).
+     * 
+     * @return array The form validation rules for removing stock.
+     */
     private function _stock_remove_form_validation()
     {
         // stock form validation rules
@@ -296,6 +409,19 @@ class Stocks extends BaseController
         ];
     }
 
+    /**
+     * Retrieves the stock movements for a specific product with optional filtering.
+     * 
+     * This method loads the stock movements for the specified product ID.
+     * It supports optional filtering based on different criteria such as 'IN', 'OUT', or a specific supplier.
+     * The method decrypts the provided filter if it's not empty and applies the appropriate filter.
+     * If no filter is provided, it retrieves all stock movements for the product.
+     * 
+     * @param int $id_product The ID of the product for which stock movements are retrieved.
+     * @param string $filter The optional filter parameter for filtering stock movements.
+     * 
+     * @return array An array containing the stock movements filtered according to the provided criteria.
+     */
     private function _stock_movements($id_product, $filter)
     {
         // load product stock movements with 10000 records limit

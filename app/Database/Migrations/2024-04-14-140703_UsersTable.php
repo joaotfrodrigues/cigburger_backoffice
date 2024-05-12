@@ -6,6 +6,14 @@ use CodeIgniter\Database\Migration;
 
 class UsersTable extends Migration
 {
+    /**
+     * Creates the 'users' table.
+     * 
+     * This method defines the structure of the 'users' table, including fields like username, password, name, email, roles, and others.
+     * It sets the primary key and creates the table in the database.
+     * 
+     * @return void
+     */
     public function up()
     {
         // create users table fields
@@ -80,6 +88,13 @@ class UsersTable extends Migration
         $this->forge->createTable('users');
     }
 
+    /**
+     * Drops the 'users' table.
+     * 
+     * This method removes the 'users' table from the database.
+     * 
+     * @return void
+     */
     public function down()
     {
         $this->forge->dropTable('users');
