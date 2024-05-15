@@ -80,7 +80,7 @@ class ApiModel extends Model
 
             // get restaurant products
             $data['products'] = $db->query("
-                SELECT *
+                SELECT p.*
                 FROM products AS p
                 INNER JOIN restaurants AS r ON p.id_restaurant = r.id
                 WHERE r.project_id = :project_id:
