@@ -46,25 +46,6 @@ class Api extends BaseController
         echo $encrypted_data;
     }
 
-    /**
-     * Retrieves the project ID from the API credentials provided in the request header.
-     * 
-     * This function extracts the project ID from the API credentials provided in the
-     * request header. It decrypts the credentials using the Encrypter service provided
-     * by CodeIgniter, extracts the project ID from the decrypted data, and returns it.
-     * 
-     * @return string|null The project ID extracted from the API credentials, or null if not found.
-     */
-    private function _get_project_id()
-    {
-        $header_credentials = $this->request->getHeaderLine('X-API-CREDENTIALS');
-
-        $encrypter = \Config\Services::encrypter();
-        $credentials = json_decode($encrypter->decrypt(hex2bin($header_credentials)), true);
-
-        return $credentials['project_id'];
-    }
-
     // -----------------------------------------------------------------------------------------------------------------
     // API METHODS
     // -----------------------------------------------------------------------------------------------------------------
@@ -112,5 +93,115 @@ class Api extends BaseController
             $api_model->get_restaurant_details(),
             $this->_get_project_id()
         );
+    }
+
+    public function request_checkout()
+    {
+        $response = new ApiResponse();
+        $response->validate_request('POST');
+
+        // respond the same data that was sent
+        $data = $this->request->getJSON(true);
+
+        // analyze request data for data integrity
+        $analysis = $this->_analyse_request_data($data);
+        if ($analysis['status'] === 'error') {
+            return $response->set_response_error(
+                400,
+                $analysis['message'],
+                $this->_get_project_id()
+            );
+        }
+
+        return $response->set_response(
+            200,
+            'success',
+            $data,
+            $this->_get_project_id()
+        );
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // PRIVATE METHODS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Retrieves the project ID from the API credentials provided in the request header.
+     * 
+     * This function extracts the project ID from the API credentials provided in the
+     * request header. It decrypts the credentials using the Encrypter service provided
+     * by CodeIgniter, extracts the project ID from the decrypted data, and returns it.
+     * 
+     * @return string|null The project ID extracted from the API credentials, or null if not found.
+     */
+    private function _get_project_id()
+    {
+        $header_credentials = $this->request->getHeaderLine('X-API-CREDENTIALS');
+
+        $encrypter = \Config\Services::encrypter();
+        $credentials = json_decode($encrypter->decrypt(hex2bin($header_credentials)), true);
+
+        return $credentials['project_id'];
+    }
+
+    /**
+     * Analyzes and validates the provided request data.
+     * 
+     * This function checks if the required fields are present and valid in the provided data array. It ensures that
+     * the request data contains the 'restaurant_id', 'order.items', 'order.status', and 'machine_id'. It also verifies
+     * that the 'order.status' is set to 'paid'. If any of these checks fail, it returns an error status with an appropriate
+     * message. If all checks pass, it returns a success status.
+     * 
+     * @param array $data The request data to be analyzed.
+     * 
+     * @return array An associative array with 'status' and 'message' indicating the result of the analysis.
+     */
+    private function _analyse_request_data($data)
+    {
+        // restaurant id
+        if (!isset($data['restaurant_id'])) {
+            return [
+                'status' => 'error',
+                'message' => 'restaurant_id is mandatory'
+            ];
+        }
+
+        // check if order contains items collection
+        if (!isset($data['order']['items'])) {
+            return [
+                'status' => 'error',
+                'message' => 'order.items is mandatory'
+            ];
+        }
+
+        // check if order contains status
+        if (!isset($data['order']['status'])) {
+            return [
+                'status' => 'error',
+                'message' => 'order.status is mandatory'
+            ];
+        }
+
+        // check if order contains status is paid
+        if ($data['order']['status'] !== 'paid') {
+            return [
+                'status' => 'error',
+                'message' => 'order must be paid'
+            ];
+        }
+
+        // check if order contains machine_id
+        if (!isset($data['machine_id'])) {
+            return [
+                'status' => 'error',
+                'message' => 'machine_id is mandatory'
+            ];
+        }
+
+        // everything is ok
+        return [
+            'status' => 'success',
+            'message' => 'success'
+        ];
     }
 }
