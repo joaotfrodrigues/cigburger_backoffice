@@ -5,9 +5,6 @@
 - [🚀 Prerequisites](#-prerequisites)
 - [🛠️ Setup](#️-setup)
 - [📡 API Endpoints](#api-endpoints)
-- [🚦 API Status](#-api-status)
-- [🏪 Restaurant Details](#-restaurant-details)
-- [🛒 Request Checkout](#-request-checkout)
 
 ## ❓ What is this?
 
