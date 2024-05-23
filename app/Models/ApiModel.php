@@ -161,4 +161,91 @@ class ApiModel extends Model
             ];
         }
     }
+
+    /**
+     * Adds a new order to the 'orders' table.
+     * 
+     * This function inserts a new order record into the 'orders' table in the database. It includes the restaurant ID,
+     * machine ID, total price, status, and timestamps for the order date and creation time. This method only adds the
+     * order itself, not the individual order items, which should be handled separately.
+     * 
+     * @param int $id_restaurant The ID of the restaurant placing the order.
+     * @param string $machine_id The ID of the machine associated with the order.
+     * @param float $total_price The total price of the order.
+     * @param string $status The status of the order.
+     * 
+     * @return array An associative array containing the status of the operation, a message, and the ID of the newly inserted order.
+     */
+    public function add_order($id_restaurant, $machine_id, $total_price, $status)
+    {
+        try {
+            $db = Database::connect();
+
+            $data = [
+                'id_restaurant' => $id_restaurant,
+                'machine_id' => $machine_id,
+                'order_date' => date('Y-m-d H:i:s'),
+                'order_status' => $status,
+                'total_price' => $total_price,
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+
+            $db->table('orders')->insert($data);
+
+            return [
+                'status' => 'success',
+                'message' => 'Order added successfully',
+                'id' => $db->insertID()
+            ];
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Adds order items to the database for a given order.
+     * 
+     * This function inserts multiple order items into the 'order_products' table in the database.
+     * It accepts an order ID and an array of order items, each containing product ID, price per unit, and quantity.
+     * The function constructs the necessary data array and performs a batch insert. If the insertion is successful,
+     * it returns a success status. If an error occurs during the database operation, it catches the exception
+     * and returns an error status with the exception message.
+     * 
+     * @param int $order_id The ID of the order to which the items belong.
+     * @param array $order_items An associative array of order items, with product IDs as keys and arrays containing 'price' and 'quantity' as values.
+     * 
+     * @return array An array containing the status ('success' or 'error') and a message.
+     */
+    public function add_order_items($order_id, $order_items)
+    {
+        try {
+            $db = Database::connect();
+
+            $data = [];
+            foreach ($order_items as $id_product => $item) {
+                $data[] = [
+                    'id_order' => $order_id,
+                    'id_product' => $id_product,
+                    'price_per_unit' => $item['price'],
+                    'quantity' => $item['quantity'],
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
+            }
+
+            $db->table('order_products')->insertBatch($data);
+
+            return [
+                'status' => 'success',
+                'message' => 'Order items added successfully'
+            ];
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+    }
 }

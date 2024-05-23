@@ -95,6 +95,16 @@ class Api extends BaseController
         );
     }
 
+    /**
+     * Processes a checkout request and validates its integrity and product availability.
+     * 
+     * This function handles a POST request to initiate the checkout process. It validates the request method,
+     * retrieves the request data, and analyzes the data for integrity and product availability. If any analysis
+     * step fails, it returns an error response with a 400 status code. If all checks pass, it returns a success
+     * response with the provided data.
+     * 
+     * @return ApiResponse The API response object containing the status and message.
+     */
     public function request_checkout()
     {
         $response = new ApiResponse();
@@ -130,6 +140,56 @@ class Api extends BaseController
             $data,
             $this->_get_project_id()
         );
+    }
+
+    /**
+     * Handles the final confirmation of an order request.
+     * 
+     * This function processes a POST request to finalize an order. It extracts the order data from the request,
+     * including restaurant ID, machine ID, total price, order items, and order status. It then adds the order to the
+     * database and retrieves the newly created order ID. Subsequently, it adds the order items to the database.
+     * If any errors occur during these operations, an appropriate error response is returned. On success, a confirmation
+     * response with the order ID is returned.
+     * 
+     * @return ApiResponse The API response object with the result of the operation.
+     */
+    public function request_final_confirmation()
+    {
+        $response = new ApiResponse();
+        $response->validate_request('POST');
+
+        $data = $this->request->getJSON(true);
+
+        // collect data from the request
+        $id_restaurant = $data['id_restaurant'];
+        $machine_id = $data['machine_id'];
+        $total_price = $data['total_price'];
+        $order_items = $data['order']['items'];
+        $status = $data['order']['status'];
+
+        // add order to database and get the id (order id)
+        $api_model = new ApiModel($this->_get_project_id());
+
+        $order_results = $api_model->add_order($id_restaurant, $machine_id, $total_price, $status);
+
+        // on error
+        if ($order_results['status'] === 'error') {
+            return $response->set_response_error(400, $order_results['message'], $this->_get_project_id());
+        }
+
+        // get order id
+        $id_order = $order_results['id'];
+
+        // add order items to database
+        $order_items_results = $api_model->add_order_items($id_order, $order_items);
+
+        // on error
+        if ($order_items_results['status'] === 'error') {
+            return $response->set_response_error(400, $order_items_results['message'], $this->_get_project_id());
+        }
+
+        // success
+        return $response->set_response(200, 'success', ['id_order' => $id_order], $this->_get_project_id());
     }
 
     // -----------------------------------------------------------------------------------------------------------------
