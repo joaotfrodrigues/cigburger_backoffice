@@ -149,6 +149,23 @@ To set up the project, follow these steps:
 - **Endpoint**: `/api/request_checkout`
 - **Method**: POST
 - **Description**: Handles the checkout process.
+- **Request Payload**:
+    ```json
+    {
+      "id_restaurant": "100",
+      "machine_id": "XDFFGFRT",
+      "order": {
+          "items": {
+              "1": {
+                  "quantity": 2
+              },
+              "15": {
+                  "quantity": 2
+              }
+          }
+      }
+    }
+    ```
 - **Response Example**:
     ```json
     {
@@ -161,23 +178,63 @@ To set up the project, follow these steps:
           "project_id": 100
       },
       "data": {
-          "restaurant_id": 100,
+          "id_restaurant": "100",
+          "machine_id": "XDFFGFRT",
           "order": {
               "items": {
                   "1": {
-                      "quantity": 2,
-                      "price": 6.75
+                      "quantity": 2
                   },
                   "15": {
-                      "quantity": 2,
-                      "price": 3.5
+                      "quantity": 2
                   }
-              },
-              "status": "paid"
-          },
-          "machine_id": "XDFFGFRT"
+              }
+          }
       }
     }
     ```
+
+### 🛒 Request Final Confirmation
+- **Endpoint**: `/api/request_final_confirmation`
+- **Method**: POST
+- **Description**: Handles the final confirmation of an order request.
+- **Request Payload**:
+    ```json
+    {
+      "id_restaurant": "100",
+      "machine_id": "XDFFGFRT",
+      "total_price": 25.50,
+      "order": {
+          "items": {
+              "1": {
+                  "quantity": 2,
+                  "price": 6.75
+              },
+              "15": {
+                  "quantity": 2,
+                  "price": 3.5
+              }
+          },
+          "status": "paid"
+      }
+    }
+    ```
+- **Response Example**:
+    ```json
+    {
+      "status": 200,
+      "message": "success",
+      "info": {
+          "version": "1.0.0",
+          "datetime": "2024-05-21 21:15:12",
+          "timestamp": 1716326112,
+          "project_id": 100
+      },
+      "data": {
+          "id_order": 12345
+      }
+    }
+    ```
+
 
 By following these steps, you should have your CigBurger Backoffice project set up and ready to use. Make sure to check out the other parts of the project, CigBurger Request and CigBurger Kitchen, to complete the full course project.
