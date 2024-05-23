@@ -4,7 +4,7 @@
 - [❓ What is this?](#-what-is-this)
 - [🚀 Prerequisites](#-prerequisites)
 - [🛠️ Setup](#️-setup)
-- [📡 API Endpoints](#api-endpoints)
+- [📡 API Endpoints](#-api-endpoints)
 
 ## ❓ What is this?
 
@@ -64,7 +64,7 @@ To set up the project, follow these steps:
 7. **Access the Application:**
     - Open your web browser and go to [http://localhost/cigburger_backoffice/public/](http://localhost/cigburger_backoffice/public/)
 
-## 📡 API Endpoints
+## 📡 API Endpoints<a name="api-endpoints"></a>
 
 ### 🚦 API Status
 - **Endpoint**: `/api/get_status`
