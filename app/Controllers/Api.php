@@ -113,6 +113,17 @@ class Api extends BaseController
             );
         }
 
+        // analyse request data for products availability
+        $analysis = $this->_analyse_order_products_availability($data);
+        if ($analysis['status'] === 'error') {
+            return $response->set_response_error(
+                400,
+                $analysis['message'],
+                $this->_get_project_id()
+            );
+        }
+
+        // on analysis success
         return $response->set_response(
             200,
             'success',
@@ -203,5 +214,34 @@ class Api extends BaseController
             'status' => 'success',
             'message' => 'success'
         ];
+    }
+
+    /**
+     * Analyzes the availability of order products.
+     * 
+     * This function retrieves the availability of the products in the order by calling an API model. It prepares the order
+     * products data from the input array and checks their availability against the data retrieved from the database.
+     * 
+     * @param array $data The input data containing order items.
+     * 
+     * @return array The availability results of the order products from the database.
+     */
+    private function _analyse_order_products_availability($data)
+    {
+        $api_model = new ApiModel($this->_get_project_id());
+
+        // get order products from api request
+        $order_products = [];
+        foreach ($data['order']['items'] as $id => $item) {
+            $order_products[] = [
+                'id_product' => $id,
+                'quantity' => $item['quantity']
+            ];
+        }
+
+        // get products from database
+        $results = $api_model->get_products_availability($order_products);
+
+        return $results;
     }
 }

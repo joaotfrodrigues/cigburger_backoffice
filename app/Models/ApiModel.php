@@ -92,4 +92,73 @@ class ApiModel extends Model
             return $this->_sql_error($error);
         }
     }
+
+    /**
+     * Checks the availability of products in the database.
+     * 
+     * This function takes an array of product data (including product IDs and quantities) and checks their availability
+     * against the product data stored in the database. It verifies if the products exist, if they are available,
+     * and if the requested quantities can be fulfilled. It returns a status indicating the result of the check.
+     * 
+     * @param array $data The array of product data, where each product includes 'id_product' and 'quantity'.
+     * 
+     * @return array An associative array containing the status ('success' or 'error') and a message.
+     */
+    public function get_products_availability($data)
+    {
+        // get key->value pair of products (id->quantity)
+        $products = [];
+        foreach ($data as $product) {
+            $id = $product['id_product'];
+            $quantity = $product['quantity'];
+
+            $products[$id] = $quantity;
+        }
+
+        // create a string with all the products ids
+        $products_ids = implode(',', array_keys($products));
+
+        // get products from database
+        try {
+            $db = Database::connect();
+            $results = $db->query(
+                "SELECT *
+                FROM products
+                WHERE id IN ($products_ids)
+                AND availability = 1
+                AND stock > stock_min_limit
+                AND deleted_at IS NULL"
+            )->getResult();
+
+            // check if the total products is equal to the total products in the order
+            if (count($results) !== count($products)) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Some products are not available'
+                ];
+            }
+
+            // check if the quantity of each product is available 
+            foreach ($results as $product) {
+                $quantity = $products[$id];
+                if ($product->stock - $quantity <= $product->stock_min_limit) {
+                    return [
+                        'status' => 'error',
+                        'message' => 'Some products have not enough stock'
+                    ];
+                }
+            }
+
+            // all products are available
+            return [
+                'status' => 'success',
+                'message' => 'All products are available'
+            ];
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+    }
 }
