@@ -50,11 +50,13 @@ To set up the project, follow these steps:
             This command sets up the required tables and populates them with initial data.
 
 5. **Configure Environment Variables:**
-    - Create a `.env` file in the project root.
-    - Add the following configuration setting:
+    - Edit the `.env` file in the project root. If it does not exist, create it.
+    - Modify or add the following configuration setting:
         ```dotenv
         CI_ENVIRONMENT=development
         ```
+      The `CI_ENVIRONMENT` variable can be set to either `development` or `production` depending on your needs.
+    - Update the `APP_BASEURL` variable in the `.env` file to reflect the correct base URL for the application.
 
 6. **Start the Development Server:**
     ```bash
