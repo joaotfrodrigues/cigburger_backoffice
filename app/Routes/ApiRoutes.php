@@ -18,6 +18,8 @@ $routes->post('/api/request_checkout',                                 'Api::req
 $routes->post('/api/request_final_confirmation',                       'Api::request_final_confirmation');
 $routes->post('/api/get_order_details',                                'Api::get_order_details');
 $routes->post('/api/delete_order',                                     'Api::delete_order');
+$routes->post('/api/get_order_details_with_products',                  'Api::get_order_details_with_products');
+$routes->post('/api/finish_order',                                     'Api::finish_order');
 
 // api routes does not exists
 $routes->set404Override(function () {

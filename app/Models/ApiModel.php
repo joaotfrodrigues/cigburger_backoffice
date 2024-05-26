@@ -406,4 +406,164 @@ class ApiModel extends Model
             ];
         }
     }
+
+    /**
+     * Retrieves detailed information about an order along with its associated products.
+     * 
+     * This function fetches general order details using the `get_order_details` method and then
+     * retrieves information about the products associated with the order. It returns an array
+     * containing both the order details and the associated products.
+     * 
+     * @param int $id The ID of the order for which details are to be retrieved.
+     * 
+     * @return array An associative array containing the order details along with the associated products,
+     *               or an error message if any error occurs during the retrieval process.
+     */
+    public function get_order_details_with_products($id)
+    {
+        try {
+            // get order general order details
+            $order_results = $this->get_order_details($id);
+
+            if ($order_results['status'] === 'error') {
+                return [
+                    'status' => 'error',
+                    'message' => 'Error getting order details'
+                ];
+            }
+
+            $order['order_details'] = $order_results['data'];
+
+            // get order products
+            $db = Database::connect();
+
+            $params = [
+                'id' => $id
+            ];
+
+            $results = $db->query("
+                SELECT order_products.*, products.name AS product_name, products.category AS product_category
+                FROM order_products
+                INNER JOIN products ON order_products.id_product = products.id
+                WHERE order_products.id_order = :id:
+                AND order_products.deleted_at IS NULL
+            ", $params)->getResult();
+
+            if (count($results) === 0) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Error getting order products'
+                ];
+            }
+
+            $order['order_products'] = $results;
+
+            return [
+                'status' => 'success',
+                'message' => 'Order details with products retrieved successfully',
+                'data' => $order
+            ];
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Completes the order by checking product availability and updating stock.
+     *
+     * This method finalizes the order with the specified ID by performing the following steps:
+     * 1. Retrieves the products associated with the order.
+     * 2. Checks if there is sufficient stock for the order.
+     * 3. Updates the stock quantities for the products in the order.
+     * 4. Updates the order status to 'finished'.
+     *
+     * @param int $id The ID of the order to be completed.
+     * @return array An associative array containing the status of the operation ('success' or 'error'),
+     *               a message describing the outcome, and any additional data.
+     */
+    public function finish_order($id)
+    {
+        $db = Database::connect();
+        $db->transBegin();
+
+        try {
+            // Get order products
+            $params = ['id' => $id];
+            $results = $db->query("
+            SELECT order_products.id_product, order_products.quantity
+            FROM order_products
+            INNER JOIN orders ON order_products.id_order = orders.id
+            WHERE orders.id = :id:
+            AND order_products.deleted_at IS NULL
+        ", $params)->getResult();
+
+            // Collect product ids and quantities in array
+            $products = [];
+            foreach ($results as $product) {
+                $products[$product->id_product] = $product->quantity;
+            }
+
+            // Check if the stock is enough for the order
+            $placeholders = implode(',', array_fill(0, count($products), '?'));
+            $stock_results = $db->query("
+            SELECT id, stock 
+            FROM products 
+            WHERE id IN ($placeholders) 
+            FOR UPDATE", array_keys($products))->getResult();
+
+            $out_of_stock = [];
+            foreach ($stock_results as $stock) {
+                if ($stock->stock < $products[$stock->id]) {
+                    $out_of_stock[] = $stock->id;
+                }
+            }
+
+            if (!empty($out_of_stock)) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Insufficient stock for products: ' . implode(', ', $out_of_stock)
+                ];
+            }
+
+            // Update the quantity of the products
+            foreach ($products as $id_product => $quantity) {
+                $db->query("
+                UPDATE products 
+                SET stock = stock - ? 
+                WHERE id = ?", [$quantity, $id_product]);
+            }
+
+            // Update order status to finished
+            $db->query("
+            UPDATE orders
+            SET order_status = 'finished', updated_at = NOW()
+            WHERE id = :id:
+        ", $params);
+
+            // Commit transaction
+            if ($db->transStatus() === false) {
+                $db->transRollback();
+                return [
+                    'status' => 'error',
+                    'message' => 'Failed to finish the order due to a transaction error.'
+                ];
+            }
+
+            $db->transCommit();
+            return [
+                'status' => 'success',
+                'message' => 'Order finished successfully',
+                'data' => []
+            ];
+        } catch (\Exception $e) {
+            $db->transRollback();
+            return [
+                'status' => 'error',
+                'message' => 'Exception: ' . $e->getMessage()
+            ];
+        }
+    }
 }

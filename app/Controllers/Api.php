@@ -291,6 +291,75 @@ class Api extends BaseController
         return $response->set_response(200, 'success', [], $this->_get_project_id());
     }
 
+    /**
+     * Retrieves order details along with associated products.
+     *
+     * This method sends a POST request to the API's 'get_order_details_with_products' endpoint
+     * to retrieve detailed information about an order, including its associated products. It validates
+     * the request parameters, sends the request, and handles the response. If successful, it returns
+     * an ApiResponse instance with a status of 200 indicating success, along with the order details
+     * and associated products data. If there's an error, it returns an ApiResponse instance with a
+     * status of 400 and an appropriate error message.
+     *
+     * @return ApiResponse An instance of the ApiResponse class representing the response from
+     *                      the API containing the order details along with associated products
+     *                      or an error message.
+     */
+    public function get_order_details_with_products()
+    {
+        $response = new ApiResponse();
+        $response->validate_request('POST');
+
+        $api_model = new ApiModel($this->_get_project_id());
+
+        $data = $this->request->getJSON(true);
+        if (empty($data)) {
+            return $response->set_response_error(400, 'Invalid parameter', $this->_get_project_id());
+        }
+
+        $results = $api_model->get_order_details_with_products($data['id']);
+
+        if ($results['status'] === 'error') {
+            return $response->set_response_error(400, $results['message'], $this->_get_project_id());
+        }
+
+        // success
+        return $response->set_response(200, 'success', $results['data'], $this->_get_project_id());
+    }
+
+    /**
+     * Finalizes an order by processing product availability and updating the order status.
+     * 
+     * This function validates the incoming POST request to ensure it contains a valid order ID.
+     * It then calls the `finish_order` method of the `ApiModel` to complete the order processing,
+     * which includes checking product availability and updating the stock quantities.
+     * The function returns an appropriate response based on the success or failure of the operation.
+     * 
+     * @return ApiResponse An instance of the ApiResponse class representing the response from
+     *                      the API, containing the status of the operation and a corresponding message.
+     */
+    public function finish_order()
+    {
+        $response = new ApiResponse();
+        $response->validate_request('POST');
+
+        $api_model = new ApiModel($this->_get_project_id());
+
+        $data = $this->request->getJSON(true);
+        if (empty($data)) {
+            return $response->set_response_error(400, 'Invalid parameter', $this->_get_project_id());
+        }
+
+        $results = $api_model->finish_order($data['id']);
+
+        if ($results['status'] === 'error') {
+            return $response->set_response_error(400, $results['message'], $this->_get_project_id());
+        }
+
+        // success
+        return $response->set_response(200, 'success', $results['data'], $this->_get_project_id());
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
     // -----------------------------------------------------------------------------------------------------------------

@@ -330,4 +330,83 @@ To set up the project, follow these steps:
     }
     ```
 
+### 📦 Get Order Details with Products
+- **Endpoint**: `/api/get_order_details_with_products`
+- **Method**: POST
+- **Description**: Retrieves details of a specific order along with the associated products.
+- **Request Payload**:
+    ```json
+    {
+      "id": "123"
+    }
+    ```
+- **Response Example**:
+    ```json
+    {
+      "status": 200,
+      "message": "success",
+      "info": {
+          "version": "1.0.0",
+          "datetime": "2024-05-26 19:00:00",
+          "timestamp": 1716750000,
+          "project_id": "100"
+      },
+      "data": {
+        "order_details": {
+          "id": "2",
+          "id_restaurant": "1",
+          "machine_id": "XDFFGFRT",
+          "order_number": "2",
+          "order_date": "2024-05-26 16:09:02",
+          "order_status": "paid",
+          "total_price": "28.50",
+          "created_at": "2024-05-26 16:09:02",
+          "updated_at": null,
+          "deleted_at": null,
+          "total_items": "5"
+        },
+        "order_products": [
+          {
+            "id": "4",
+            "id_order": "2",
+            "id_product": "6",
+            "price_per_unit": "13.00",
+            "quantity": "1",
+            "created_at": "2024-05-26 16:09:02",
+            "updated_at": null,
+            "deleted_at": null,
+            "product_name": "Cig Royale",
+            "product_category": "Hambúrgueres"
+          },
+          ...
+        ]
+      }
+    }
+    ```
+
+### 🏁 Finish Order
+- **Endpoint**: `/api/finish_order`
+- **Method**: POST
+- **Description**: Marks a specific order as finished based on its ID.
+- **Request Payload**:
+    ```json
+    {
+      "id": "123"
+    }
+    ```
+- **Response Example**:
+    ```json
+    {
+      "status": 200,
+      "message": "success",
+      "info": {
+          "version": "1.0.0",
+          "datetime": "2024-05-26 21:49:37",
+          "timestamp": 1716760177,
+          "project_id": "100"
+      },
+      "data": []
+    }
+    ```
+
 By following these steps, you should have your CigBurger Backoffice project set up and ready to use. Make sure to check out the other parts of the project, CigBurger Request and CigBurger Kitchen, to complete the full course project.
