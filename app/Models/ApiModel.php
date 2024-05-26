@@ -316,7 +316,7 @@ class ApiModel extends Model
             if (count($results) === 0) {
                 return 0;
             }
-            return $results[0]['order_number'];
+            return $results[0]->order_number;
         } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
             return [
                 'status' => 'error',
