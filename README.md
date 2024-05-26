@@ -144,6 +144,39 @@ To set up the project, follow these steps:
     }
     ```
 
+### 🕒 Get Pending Orders
+- **Endpoint**: `/api/get_pending_orders`
+- **Method**: GET
+- **Description**: Retrieves a list of pending orders for the restaurant.
+- **Response Example**:
+    ```json
+    {
+      "status": 200,
+      "message": "success",
+      "info": {
+          "version": "1.0.0",
+          "datetime": "2024-05-26 11:13:14",
+          "timestamp": 1716721994,
+          "project_id": "100"
+      },
+      "data": [
+        {
+          "id": "1",
+          "id_restaurant": "1",
+          "machine_id": "XDFFGFRT",
+          "order_number": null,
+          "order_date": "2024-05-24 23:33:38",
+          "order_status": "paid",
+          "total_price": "12.25",
+          "created_at": "2024-05-24 23:33:38",
+          "updated_at": null,
+          "deleted_at": null
+        },
+        ...
+      ]
+    }
+    ```
+
 ### 🛒 Request Checkout
 - **Endpoint**: `/api/request_checkout`
 - **Method**: POST
@@ -230,7 +263,8 @@ To set up the project, follow these steps:
           "project_id": 100
       },
       "data": {
-          "id_order": 12345
+          "id_order": 12345,
+          "order_number": 43
       }
     }
     ```

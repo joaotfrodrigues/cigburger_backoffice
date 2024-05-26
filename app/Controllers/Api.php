@@ -170,7 +170,13 @@ class Api extends BaseController
         // add order to database and get the id (order id)
         $api_model = new ApiModel($this->_get_project_id());
 
-        $order_results = $api_model->add_order($id_restaurant, $machine_id, $total_price, $status);
+        // get the last order number from the active restaurant
+        $order_number = $api_model->get_last_order_number($id_restaurant);
+
+        // increment order number to preparate the nexty order
+        $order_number++;
+
+        $order_results = $api_model->add_order($id_restaurant, $machine_id, $total_price, $status, $order_number);
 
         // on error
         if ($order_results['status'] === 'error') {
@@ -189,7 +195,36 @@ class Api extends BaseController
         }
 
         // success
-        return $response->set_response(200, 'success', ['id_order' => $id_order], $this->_get_project_id());
+        return $response->set_response(200, 'success', [
+            'id_order' => $id_order,
+            'order_number' => $order_number
+        ], $this->_get_project_id());
+    }
+
+    /**
+     * Retrieves and responds with pending orders with a status of 'paid' for the current project.
+     * 
+     * This function validates a GET request and then uses the ApiModel to retrieve pending orders. 
+     * If an error occurs during retrieval, it sets an error response. If successful, it sets a success 
+     * response with the retrieved orders data.
+     * 
+     * @return ApiResponse The API response object with the result of the operation.
+     */
+    public function get_pending_orders()
+    {
+        $response = new ApiResponse();
+        $response->validate_request('GET');
+
+        $api_model = new ApiModel($this->_get_project_id());
+        $results = $api_model->get_pending_orders();
+
+        // on error
+        if ($results['status'] === 'error') {
+            return $response->set_response_error(400, $results['message'], $this->_get_project_id());
+        }
+
+        // success
+        return $response->set_response(200, 'success', $results['data'], $this->_get_project_id());
     }
 
     // -----------------------------------------------------------------------------------------------------------------

@@ -171,12 +171,13 @@ class ApiModel extends Model
      * 
      * @param int $id_restaurant The ID of the restaurant placing the order.
      * @param string $machine_id The ID of the machine associated with the order.
+     * @param int $order_number The order number.
      * @param float $total_price The total price of the order.
      * @param string $status The status of the order.
      * 
      * @return array An associative array containing the status of the operation, a message, and the ID of the newly inserted order.
      */
-    public function add_order($id_restaurant, $machine_id, $total_price, $status)
+    public function add_order($id_restaurant, $machine_id, $total_price, $status, $order_number)
     {
         try {
             $db = Database::connect();
@@ -184,6 +185,7 @@ class ApiModel extends Model
             $data = [
                 'id_restaurant' => $id_restaurant,
                 'machine_id' => $machine_id,
+                'order_number' => $order_number,
                 'order_date' => date('Y-m-d H:i:s'),
                 'order_status' => $status,
                 'total_price' => $total_price,
@@ -195,7 +197,8 @@ class ApiModel extends Model
             return [
                 'status' => 'success',
                 'message' => 'Order added successfully',
-                'id' => $db->insertID()
+                'id' => $db->insertID(),
+                'order_number' => $order_number
             ];
         } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
             return [
@@ -241,6 +244,79 @@ class ApiModel extends Model
                 'status' => 'success',
                 'message' => 'Order items added successfully'
             ];
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Retrieves pending orders with a status of 'paid' for the current project.
+     * 
+     * This function connects to the database and fetches orders with a status of 'paid' that belong to the 
+     * current project and have not been deleted. It joins the orders with the restaurants table to ensure 
+     * the orders belong to the correct project. If successful, it returns a success status and the retrieved 
+     * orders. If an error occurs, it catches the database exception and returns an error status with the 
+     * exception message.
+     * 
+     * @return array The result of the operation, including status, message, and data (if successful).
+     */
+    public function get_pending_orders()
+    {
+        try {
+            $db = Database::connect();
+
+            $params = [
+                'project_id' => $this->project_id
+            ];
+            $results = $db->query("
+                SELECT orders.*, SUM(order_products.quantity) as total_items
+                FROM orders
+                INNER JOIN restaurants ON orders.id_restaurant = restaurants.id
+                INNER JOIN order_products ON orders.id = order_products.id_order
+                WHERE orders.order_status = 'paid'
+                AND restaurants.project_id = :project_id:
+                AND orders.deleted_at IS NULL
+                AND order_products.deleted_at IS NULL
+                GROUP BY orders.id
+            ", $params)->getResult();
+
+            return [
+                'status' => 'success',
+                'message' => 'Orders retrieved successfully',
+                'data' => $results
+            ];
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+
+    public function get_last_order_number($id_restaurant)
+    {
+        try {
+            $db = Database::connect();
+
+            $params = [
+                'id_restaurant' => $id_restaurant
+            ];
+
+            $results = $db->query("
+                SELECT order_number
+                FROM orders
+                WHERE id_restaurant = :id_restaurant:
+                ORDER BY order_number DESC
+                LIMIT 1
+            ", $params)->getResult();
+
+            if (count($results) === 0) {
+                return 0;
+            }
+            return $results[0]['order_number'];
         } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
             return [
                 'status' => 'error',

@@ -13,6 +13,7 @@ $routes->get('/create_api_credentials/(:alphanum)/(:alphanum)',        'Api::cre
 // api routes
 $routes->get('/api/get_status',                                        'Api::api_status');
 $routes->get('/api/get_restaurant_details',                            'Api::get_restaurant_details');
+$routes->get('/api/get_pending_orders',                                'Api::get_pending_orders');
 $routes->post('/api/request_checkout',                                 'Api::request_checkout');
 $routes->post('/api/request_final_confirmation',                       'Api::request_final_confirmation');
 
