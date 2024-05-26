@@ -324,4 +324,86 @@ class ApiModel extends Model
             ];
         }
     }
+
+    /**
+     * Retrieves detailed information about an order.
+     * 
+     * This function connects to the database and retrieves detailed information about an order,
+     * including the total quantity of items in the order. It performs a query that joins the orders
+     * and order_products tables, filtering by the order ID and excluding deleted orders.
+     * 
+     * @param int $id The ID of the order to retrieve.
+     * 
+     * @return array An associative array containing the status, message, and order details. 
+     *               If successful, 'data' contains the order details; if not, 'message' contains the error message.
+     */
+    public function get_order_details($id)
+    {
+        try {
+            $db = Database::connect();
+
+            $params = [
+                'id' => $id
+            ];
+
+            $results = $db->query("
+                SELECT orders.*, SUM(order_products.quantity) as total_items
+                FROM orders
+                INNER JOIN order_products ON orders.id = order_products.id_order
+                WHERE orders.id = :id:
+                AND orders.deleted_at IS NULL
+            ", $params)->getResult();
+
+            return [
+                'status' => 'success',
+                'message' => 'Order retrieved successfully',
+                'data' => $results[0]
+            ];
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Cancels and deletes an order from the database.
+     * 
+     * This function performs a soft delete operation by setting the 'deleted_at' timestamp
+     * for the specified order ID in the 'orders' table. Additionally, it updates the order
+     * status to 'canceled'. It returns a response indicating the success or failure of the
+     * cancellation and deletion operation.
+     * 
+     * @param int $id The ID of the order to be canceled and deleted.
+     * 
+     * @return array An array containing the status of the cancellation and deletion operation
+     *               and a corresponding message.
+     */
+    public function delete_order($id)
+    {
+        try {
+            $db = Database::connect();
+
+            $params = [
+                'id' => $id
+            ];
+
+            $results = $db->query("
+                UPDATE orders
+                SET deleted_at = NOW(), order_status = 'canceled'
+                WHERE id = :id:
+            ", $params);
+
+            return [
+                'status' => 'success',
+                'message' => 'Order deleted successfully'
+            ];
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+    }
 }

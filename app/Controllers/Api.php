@@ -227,6 +227,70 @@ class Api extends BaseController
         return $response->set_response(200, 'success', $results['data'], $this->_get_project_id());
     }
 
+    /**
+     * Retrieves detailed information about an order via API request.
+     * 
+     * This function handles a POST request to retrieve order details. It validates the request,
+     * extracts the order ID from the JSON payload, and uses the ApiModel to fetch the order details.
+     * If the request or the data retrieval fails, it returns an error response. On success, it returns
+     * the order details.
+     * 
+     * @return ApiResponse The API response containing the status, message, and order details.
+     */
+    public function get_order_details()
+    {
+        $response = new ApiResponse();
+        $response->validate_request('POST');
+
+        $api_model = new ApiModel($this->_get_project_id());
+
+        $data = $this->request->getJSON(true);
+        if (empty($data)) {
+            return $response->set_response_error(400, 'Invalid parameter', $this->_get_project_id());
+        }
+
+        $results = $api_model->get_order_details($data['id']);
+        if ($results['status'] === 'error') {
+            return $response->set_response_error(400, $results['message'], $this->_get_project_id());
+        }
+
+        // success
+        return $response->set_response(200, 'success', $results['data'], $this->_get_project_id());
+    }
+
+    /**
+     * Cancels and deletes an order through the API request.
+     * 
+     * This function sends a request to the API's 'delete_order' endpoint to cancel and delete
+     * the order with the specified ID. It validates the request parameters, sends the request,
+     * and handles the response. It returns a response indicating the success or failure of the
+     * cancellation and deletion operation.
+     * 
+     * @return ApiResponse An instance of the ApiResponse class representing the response from
+     *                      the API containing the status of the cancellation and deletion operation
+     *                      and a corresponding message.
+     */
+    public function delete_order()
+    {
+        $response = new ApiResponse();
+        $response->validate_request('POST');
+
+        $api_model = new ApiModel($this->_get_project_id());
+
+        $data = $this->request->getJSON(true);
+        if (empty($data)) {
+            return $response->set_response_error(400, 'Invalid parameter', $this->_get_project_id());
+        }
+
+        $results = $api_model->delete_order($data['id']);
+        if ($results['status'] === 'error') {
+            return $response->set_response_error(400, $results['message'], $this->_get_project_id());
+        }
+
+        // success
+        return $response->set_response(200, 'success', [], $this->_get_project_id());
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
     // -----------------------------------------------------------------------------------------------------------------

@@ -268,6 +268,66 @@ To set up the project, follow these steps:
       }
     }
     ```
+### 🕵️‍♂️ Get Order Details
+- **Endpoint**: `/api/get_order_details`
+- **Method**: POST
+- **Description**: Retrieves details of a specific order based on its ID.
+- **Request Payload**:
+    ```json
+    {
+      "id": "123"
+    }
+    ```
+- **Response Example**:
+    ```json
+    {
+      "status": 200,
+      "message": "success",
+      "info": {
+          "version": "1.0.0",
+          "datetime": "2024-05-26 17:01:43",
+          "timestamp": 1716742903,
+          "project_id": "100"
+      },
+      "data": {
+        "id": "2",
+        "id_restaurant": "1",
+        "machine_id": "XDFFGFRT",
+        "order_number": "2",
+        "order_date": "2024-05-26 16:09:02",
+        "order_status": "paid",
+        "total_price": "28.50",
+        "created_at": "2024-05-26 16:09:02",
+        "updated_at": null,
+        "deleted_at": null,
+        "total_items": "5"
+      }
+    }
+    ```
 
+### 🗑️ Delete Order
+- **Endpoint**: `/api/delete_order`
+- **Method**: POST
+- **Description**: Deletes a specific order based on its ID.
+- **Request Payload**:
+    ```json
+    {
+      "id": "123"
+    }
+    ```
+- **Response Example**:
+    ```json
+    {
+      "status": 200,
+      "message": "success",
+      "info": {
+          "version": "1.0.0",
+          "datetime": "2024-05-26 17:17:00",
+          "timestamp": 1716743820,
+          "project_id": "100"
+      },
+      "data": []
+    }
+    ```
 
 By following these steps, you should have your CigBurger Backoffice project set up and ready to use. Make sure to check out the other parts of the project, CigBurger Request and CigBurger Kitchen, to complete the full course project.
