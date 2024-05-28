@@ -36,3 +36,6 @@ $routes->post('/stocks/remove_submit',                                'Stocks::r
 $routes->get('/stocks/movements/(:alphanum)',                         'Stocks::movements/$1');
 $routes->get('/stocks/movements/(:alphanum)/(:alphanum)',             'Stocks::movements/$1/$2');
 $routes->get('/stocks/export_csv/(:alphanum)',                        'Stocks::export_csv/$1');
+
+// api restaurant
+$routes->get('/api_restaurant',                                       'ApiRestaurant::index');

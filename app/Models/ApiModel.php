@@ -524,7 +524,7 @@ class ApiModel extends Model
             if (!empty($out_of_stock)) {
                 return [
                     'status' => 'error',
-                    'message' => 'Insufficient stock for products: ' . implode(', ', $out_of_stock)
+                    'message' => 'Some products are not available'
                 ];
             }
 
