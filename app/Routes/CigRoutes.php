@@ -42,3 +42,9 @@ $routes->get('/api_restaurant',                                       'ApiRestau
 $routes->get('/api_restaurant/download/(:alphanum)',                  'ApiRestaurant::download/$1');
 $routes->get('/api_restaurant/create_new_machine',                    'ApiRestaurant::create_new_machine');
 $routes->get('/api_restaurant/change_api_key',                        'ApiRestaurant::change_api_key');
+
+// consumptions
+$routes->get('/consumptions',                                         'Consumptions::index');
+$routes->get('/consumptions/reset_date_interval',                     'Consumptions::reset_date_interval');
+$routes->get('/consumptions/set_category/(:alphanum)',                'Consumptions::set_category/$1');
+$routes->post('/consumptions/filter_date_interval',                   'Consumptions::filter_date_interval');

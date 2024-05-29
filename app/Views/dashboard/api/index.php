@@ -2,9 +2,9 @@
 <?= $this->section('content') ?>
 <?= $this->include('partials/page_title') ?>
 
-<div class="d-flex flex-column flex-md-row py-2 justify-content-between border-secondary border-top border-bottom">
-    <h4 class="my-2 my-md-0 text-center"><?= session('user')['restaurant_name'] ?></h4>
-    <h4 class="my-2 my-md-0 text-center"><?= $project_id ?></h4>
+<div class="d-flex flex-column flex-lg-row py-2 justify-content-between border-secondary border-top border-bottom">
+    <h4 class="my-2 my-md-0 text-center">Nome: <?= session('user')['restaurant_name'] ?></h4>
+    <h4 class="my-2 my-md-0 text-center">ID: <?= $project_id ?></h4>
     <h4 class="my-2 my-md-0 text-center">API key: <span class="text-secondary"><?= $api_key_openssl ?></span></h4>
 </div>
 

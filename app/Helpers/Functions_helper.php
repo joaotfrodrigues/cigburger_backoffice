@@ -89,3 +89,25 @@ if (!function_exists('stock_movement_select_filter')) {
         }
     }
 }
+
+if (!function_exists('set_selected')) {
+    /**
+     * Sets the "selected" attribute for a dropdown option based on the comparison of two values.
+     * 
+     * This function compares the given value with the selected value. If they are equal, it returns 
+     * "selected", indicating that the option should be selected in a dropdown menu.
+     * 
+     * @param mixed $value The value to compare.
+     * @param mixed $selected The selected value.
+     * 
+     * @return string Returns "selected" if the given value matches the selected value, otherwise returns an empty string.
+     */
+    function set_selected($value, $selected)
+    {
+        if ($value === $selected) {
+            return "selected";
+        }
+
+        return "";
+    }
+}
