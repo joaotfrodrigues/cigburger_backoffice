@@ -23,9 +23,14 @@ $routes->post('/api/finish_order',                                     'Api::fin
 
 // api routes does not exists
 $routes->set404Override(function () {
-    $response = new ApiResponse;
+    if (strpos(uri_string(), 'api/') !== false) {
+        // api routes
+        $response = new ApiResponse;
     
-    response()->setContentType('application/json');
-
-    echo $response->set_response_error(404, 'Route does not exists');
+        echo $response->set_response_error(404, 'Route does not exists');
+    
+    } else {
+        // other routes (CigRoutes)
+        throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+    }
 });

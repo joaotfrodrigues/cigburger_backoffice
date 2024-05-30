@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\ConsumptionsModel;
+use App\Models\ProductModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use DateTime;
 
@@ -44,7 +45,10 @@ class Consumptions extends BaseController
         $model = new ConsumptionsModel();
 
         // get products
-        $data['products'] = $model->get_consumptions($filter_category, $filter_date_interval);
+        $data['products'] = $model->get_consumptions($data['filter_category'], $filter_date_interval);
+
+        // load datatables from layout_main.php
+        $data['datatables'] = true;
 
         // get categories
         $data['categories'] = $model->get_categories();
@@ -129,5 +133,71 @@ class Consumptions extends BaseController
 
         session()->set('filter_category', $category);
         return redirect()->to('/consumptions');
+    }
+
+    /**
+     * Sets the date filter to the last seven days and redirects to the consumptions page.
+     * 
+     * This method sets a session variable 'filter_date_interval' with the start date as seven days ago 
+     * and the end date as the current date. It then redirects the user to the consumptions page.
+     * 
+     * @return RedirectResponse A redirect response to the consumptions page.
+     */
+    public function last_seven_days()
+    {
+        session()->set('filter_date_interval', [
+            'start_date' => new DateTime(date('Y-m-d', strtotime('-7 day'))),
+            'end_date'   => new DateTime(date('Y-m-d'))
+        ]);
+
+        return redirect()->to('/consumptions');
+    }
+
+    /**
+     * Resets all filters and redirects to the consumptions page.
+     * 
+     * This method removes the 'filter_date_interval' and 'filter_category' session variables, effectively
+     * resetting any filters that were applied. It then redirects the user to the consumptions page.
+     * 
+     * @return RedirectResponse A redirect response to the consumptions page.
+     */
+    public function reset_all_filters()
+    {
+        session()->remove('filter_date_interval');
+        session()->remove('filter_category');
+
+        return redirect()->to('/consumptions');
+    }
+
+    public function product_details($enc_id)
+    {
+        // validate id
+        $id = Decrypt($enc_id);
+        if (empty($id)) {
+            return redirect()->to('/consumptions');
+        }
+
+        $data = [
+            'title' => 'Consumos',
+        ];
+
+        // get product information
+        $model = new ProductModel();
+        $data['product'] = $model->find($id);
+
+        $data['page'] = 'Consumos - ' . $data['product']->name;
+
+        // get consumptions information from the product
+        $model = new ConsumptionsModel();
+        $data['consumptions'] = $model->get_consumptions_by_id($id);
+
+        // get total consumptions
+        $consumption_column = array_column($data['consumptions'], 'quantity');
+        $data['total_consumption'] = array_sum($consumption_column);
+
+        // enable datatables library import
+        $data['datatables'] = true;
+
+        return view('dashboard/consumptions/product_details', $data);
     }
 }

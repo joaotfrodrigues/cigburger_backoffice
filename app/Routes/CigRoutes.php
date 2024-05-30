@@ -46,5 +46,8 @@ $routes->get('/api_restaurant/change_api_key',                        'ApiRestau
 // consumptions
 $routes->get('/consumptions',                                         'Consumptions::index');
 $routes->get('/consumptions/reset_date_interval',                     'Consumptions::reset_date_interval');
+$routes->get('/consumptions/last_seven_days',                         'Consumptions::last_seven_days');
+$routes->get('/consumptions/reset_all_filters',                       'Consumptions::reset_all_filters');
+$routes->get('/consumptions/product_details/(:alphanum)',             'Consumptions::product_details/$1');
 $routes->get('/consumptions/set_category/(:alphanum)',                'Consumptions::set_category/$1');
 $routes->post('/consumptions/filter_date_interval',                   'Consumptions::filter_date_interval');

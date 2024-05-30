@@ -24,8 +24,15 @@
                         <i class="fa-regular fa-calendar-days me-2"></i>
                         Intervalo de datas
                     </button>
+                    <!-- last 7 days -->
+                    <a href="<?= site_url('/consumptions/last_seven_days') ?>" class="btn btn-outline-secondary mx-2"><i class="fa-solid fa-calendar-days me-2"></i>Últimos 7 dias</a>
                     <a href="<?= site_url('/consumptions/reset_date_interval') ?>" class="btn btn-outline-secondary" title="Limpar datas"><i class="fa-regular fa-calendar-xmark"></i></a>
                     <span class="ms-3"><?= !empty($filter_date_interval) ? $filter_date_interval : 'Desde Sempre' ?></span>
+                </div>
+
+                <!-- reset all -->
+                <div class="align-self-end">
+                    <a href="<?= site_url('/consumptions/reset_all_filters') ?>" class="btn btn-outline-secondary ms-3" title="Limpar filtros"><i class="fa-solid fa-arrows-rotate"></i></a>
                 </div>
             </div>
             <?php if (empty($products)) : ?>
@@ -49,7 +56,9 @@
                                 <td class="text-center">
                                     <img src="<?= base_url('assets/images/products/' . $product['image']) ?>" alt="<?= $product['name'] ?>" class="img-fluid" style="max-width: 50px;">
                                 </td>
-                                <td class="align-middle"><?= $product['name'] ?></td>
+                                <td class="align-middle">
+                                    <a href="<?= site_url('/consumptions/product_details/' . Encrypt($product['id'])) ?>"><?= $product['name'] ?></a>
+                                </td>
                                 <td class="align-middle"><?= $product['category'] ?></td>
                                 <!-- availability -->
                                 <td class="text-center align-middle">
@@ -102,13 +111,50 @@
             maxDate: 'today',
             dateFormat: 'Y-m-d'
         });
-    });
 
-    // select category
-    const selectCategories = document.getElementById('select_categories');
-    selectCategories.addEventListener('change', () => {
-        const category = selectCategories.value;
-        window.location.href = `<?= site_url('/consumptions/set_category') ?>/${category}`;
+        // select category
+        const selectCategories = document.getElementById('select_categories');
+        selectCategories.addEventListener('change', () => {
+            const category = selectCategories.value;
+            window.location.href = `<?= site_url('/consumptions/set_category') ?>/${category}`;
+        });
+
+        // datatable
+        $('#table_products').DataTable({
+            columnDefs: [{
+                    "targets": [0],
+                    "orderable": false
+                } // Disable ordering for columns 0
+            ],
+            order: [
+                [5, "desc"] // Order on column 5 (quantity)
+            ],
+            pageLength: 50,
+            language: {
+                decimal: "",
+                emptyTable: "Sem dados disponíveis na tabela.",
+                info: "Mostrando _START_ até _END_ de _TOTAL_ registos",
+                infoEmpty: "Mostrando 0 até 0 de 0 registos",
+                infoFiltered: "(Filtrando _MAX_ total de registos)",
+                infoPostFix: "",
+                thousands: ",",
+                lengthMenu: "Mostrando _MENU_ registos por página.",
+                loadingRecords: "Carregando...",
+                processing: "Processando...",
+                search: "Filtrar:",
+                zeroRecords: "Nenhum registro encontrado.",
+                paginate: {
+                    first: "Primeira",
+                    last: "Última",
+                    next: "Seguinte",
+                    previous: "Anterior"
+                },
+                aria: {
+                    sortAscending: ": ative para classificar a coluna em ordem crescente.",
+                    sortDescending: ": ative para classificar a coluna em ordem decrescente."
+                }
+            },
+        });
     });
 </script>
 

@@ -53,7 +53,7 @@ class ConsumptionsModel extends Model
 
         // filters - category
         if ($filter_category !== 'all') {
-            $sql .= "AND products.category = :category:";
+            $sql .= "AND category = :category:";
         }
 
         $sql .= " ORDER BY id ASC";
@@ -65,7 +65,7 @@ class ConsumptionsModel extends Model
             SELECT products.id, SUM(order_products.quantity) as quantity
             FROM products
             LEFT JOIN order_products ON products.id = order_products.id_product
-            LEFT JOIN orders ON orders.id_restaurant = order_products.id_order
+            LEFT JOIN orders ON orders.id = order_products.id_order
             WHERE orders.id_restaurant = :id_restaurant: 
             AND orders.order_status = 'finished'
         ";
@@ -127,5 +127,45 @@ class ConsumptionsModel extends Model
         ";
 
         return $db->query($sql, $params)->getResultArray();
+    }
+
+    /**
+     * Retrieves daily consumption data for a specific product in the current restaurant.
+     * 
+     * This method connects to the database and retrieves the daily consumption quantities 
+     * of the specified product from finished orders within the current restaurant. It groups 
+     * the consumption data by date and returns an array where each element represents a day, 
+     * containing the date and the total quantity of the specified product consumed on that day.
+     * 
+     * @param int $id_product The ID of the product to retrieve consumption data for.
+     * 
+     * @return array An array of consumption data grouped by date. Each element of the array 
+     *               represents a day and includes the date in 'Y-m-d' format and the total 
+     *               quantity of the specified product consumed on that day.
+     */
+    public function get_consumptions_by_id($id_product)
+    {
+        $db = \Config\Database::connect();
+
+        $params = [
+            'id_restaurant' => session('user')['id_restaurant'],
+            'id_product'    => $id_product
+        ];
+
+        $sql = "
+            SELECT
+                DATE_FORMAT(orders.order_date, '%Y-%m-%d') as order_date,
+                SUM(order_products.quantity) as quantity
+            FROM products
+            LEFT JOIN order_products ON products.id = order_products.id_product
+            LEFT JOIN orders ON orders.id = order_products.id_order
+            WHERE orders.id_restaurant = :id_restaurant:
+            AND products.id = :id_product:
+            GROUP BY DATE_FORMAT(orders.order_date, '%Y-%m-%d')
+        ";
+
+        $results = $db->query($sql, $params)->getResultArray();
+
+        return $results;
     }
 }
