@@ -27,6 +27,10 @@
         <link rel="stylesheet" href="<?= base_url('assets/libs/datatables/datatables.min.css') ?>">
     <?php endif; ?>
 
+    <?php if (!empty($apexcharts)) : ?>
+        <link rel="stylesheet" href="<?= base_url('assets/libs/apexcharts/apexcharts.css') ?>">
+    <?php endif; ?>
+
     <!-- css -->
     <link rel="stylesheet" href="<?= base_url('assets/css/main.css') ?>">
 </head>
@@ -57,9 +61,14 @@
     <!-- flatpickr -->
     <script src="<?= base_url('assets/libs/flatpickr/flatpickr.min.js') ?>"></script>
 
+    <script src="<?= base_url('assets/libs/datatables/jquery/jquery.min.js') ?>"></script>
+
     <?php if (!empty($datatables)) : ?>
-        <script src="<?= base_url('assets/libs/datatables/jquery/jquery.min.js') ?>"></script>
         <script src="<?= base_url('assets/libs/datatables/datatables.min.js') ?>"></script>
+    <?php endif; ?>
+
+    <?php if (!empty($apexcharts)) : ?>
+        <script src="<?= base_url('assets/libs/apexcharts/apexcharts.min.js') ?>"></script>
     <?php endif; ?>
 
     <script>

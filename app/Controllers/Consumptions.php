@@ -169,6 +169,17 @@ class Consumptions extends BaseController
         return redirect()->to('/consumptions');
     }
 
+    /**
+     * Displays detailed consumption information for a specific product.
+     * 
+     * This method decrypts the provided product ID, validates it, and retrieves detailed 
+     * information about the product, including its consumption data. The consumption data 
+     * includes the quantities consumed on each order date. The total consumption quantity 
+     * is also calculated. This information is then passed to a view for rendering.
+     * 
+     * @param string $enc_id The encrypted product ID.
+     * @return View The view with the product details and consumption information, or a redirect if the ID is invalid.
+     */
     public function product_details($enc_id)
     {
         // validate id

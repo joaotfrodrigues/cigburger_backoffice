@@ -89,7 +89,7 @@
     window.addEventListener('DOMContentLoaded', () => {
         // datatables
         $('#table_consumptions').DataTable({
-            pageLength: 25,
+            pageLength: 10,
             // responsive: true,
             data: <?= json_encode($consumptions) ?>,
             order: [

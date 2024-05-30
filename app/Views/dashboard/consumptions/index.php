@@ -63,8 +63,10 @@
                                 <!-- availability -->
                                 <td class="text-center align-middle">
                                     <?php if ($product['availability']) : ?>
+                                        <span class="d-none"><?= $product['availability'] ?></span>
                                         <i class="fa-regular fa-circle-check fa-xl text-success"></i>
-                                    <?php else : ?>
+                                        <?php else : ?>
+                                            <span class="d-none"><?= $product['availability'] ?></span>
                                         <i class="fa-regular fa-circle-xmark fa-xl text-danger"></i>
                                     <?php endif; ?>
                                 </td>
@@ -129,7 +131,7 @@
             order: [
                 [5, "desc"] // Order on column 5 (quantity)
             ],
-            pageLength: 50,
+            pageLength: 10,
             language: {
                 decimal: "",
                 emptyTable: "Sem dados disponíveis na tabela.",
