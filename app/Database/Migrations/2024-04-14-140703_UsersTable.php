@@ -25,39 +25,48 @@ class UsersTable extends Migration
             ],
             'id_restaurant' => [
                 'type' => 'INT',
-                'constraint' => 11
+                'constraint' => 11,
+                'null' => true
             ],
             'username' => [
                 'type' => 'VARCHAR',
-                'constraint' => 50
+                'constraint' => 50,
+                'null' => true
             ],
             'passwrd' => [
                 'type' => 'VARCHAR',
-                'constraint' => 250
+                'constraint' => 250,
+                'null' => true
             ],
             'name' => [
                 'type' => 'VARCHAR',
-                'constraint' => 50
+                'constraint' => 50,
+                'null' => true
             ],
             'email' => [
                 'type' => 'VARCHAR',
-                'constraint' => 50
+                'constraint' => 50,
+                'null' => true
             ],
             'roles' => [
                 'type' => 'VARCHAR',
-                'constraint' => 250
+                'constraint' => 250,
+                'null' => true
             ],
             'phone' => [
                 'type' => 'VARCHAR',
-                'constraint' => 20
+                'constraint' => 20,
+                'null' => true
             ],
             'active' => [
                 'type' => 'INT',
-                'constraint' => 1
+                'constraint' => 1,
+                'null' => true
             ],
             'code' => [
                 'type' => 'VARCHAR',
-                'constraint' => 20
+                'constraint' => 20,
+                'null' => true
             ],
             'last_login' => [
                 'type' => 'DATETIME',

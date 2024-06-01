@@ -34,7 +34,6 @@
         <?= form_close() ?>
 
         <div class="text-center">
-            <p>Não tem conta? <a href="#" class="login-link">Cadastre-se</a></p>
             <p><a href="#" class="login-link">Recuperar senha</a></p>
         </div>
 

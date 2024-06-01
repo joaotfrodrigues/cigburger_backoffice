@@ -57,3 +57,7 @@ $routes->get('/sales',                                                 'Sales::i
 $routes->get('/sales/reset_date_interval',                             'Sales::reset_date_interval');
 $routes->get('/sales/last_seven_days',                                 'Sales::last_seven_days');
 $routes->post('/sales/filter_date_interval',                           'Sales::filter_date_interval');
+
+// users management
+$routes->get('/users_management',                                      'UsersManagement::index');
+$routes->get('/users_management/edit/(:alphanum)',                     'UsersManagement::edit/$1');
