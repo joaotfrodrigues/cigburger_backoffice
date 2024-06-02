@@ -7,7 +7,7 @@
         <div class="col content-box p-4">
             <div class="row">
                 <div class="col-12">
-                    <?= form_open('/users_management/new_user_submit', ['novalidate' => true]) ?>
+                    <?= form_open('/users_management/new_user_submit') ?>
 
                     <div class="row">
                         <div class="col">

@@ -12,7 +12,11 @@ $routes->get('/',                                                     'Main::ind
 // auth
 $routes->get('/auth/login',                                           'Auth::login');
 $routes->get('/auth/logout',                                          'Auth::logout');
+$routes->get('/auth/finish_registration/(:alphanum)',                 'Auth::finish_registration/$1');
+$routes->get('/auth/define_password',                                 'Auth::define_password');
+$routes->get('/auth/welcome',                                         'Auth::welcome');
 $routes->post('/auth/login_submit',                                   'Auth::login_submit');
+$routes->post('/auth/define_password_submit',                         'Auth::define_password_submit');
 
 // products
 $routes->get('/products',                                             'Products::index');
@@ -62,4 +66,7 @@ $routes->post('/sales/filter_date_interval',                           'Sales::f
 $routes->get('/users_management',                                      'UsersManagement::index');
 $routes->get('/users_management/new_user',                             'UsersManagement::new_user');
 $routes->get('/users_management/edit/(:alphanum)',                     'UsersManagement::edit/$1');
+$routes->get('/users_management/delete_user/(:alphanum)',              'UsersManagement::delete_user/$1');
+$routes->get('/users_management/recover_user/(:alphanum)',             'UsersManagement::recover_user/$1');
 $routes->post('/users_management/new_user_submit',                     'UsersManagement::new_user_submit');
+$routes->post('/users_management/edit_user_submit',                    'UsersManagement::edit_user_submit');

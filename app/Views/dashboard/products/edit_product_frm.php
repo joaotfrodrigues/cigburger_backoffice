@@ -3,7 +3,7 @@
 <?= $this->include('partials/page_title') ?>
 
 <div class="content-box">
-    <?= form_open_multipart('/products/edit_submit', ['novalidate' => true]) ?>
+    <?= form_open_multipart('/products/edit_submit') ?>
 
     <input type="hidden" name="id_product" value="<?= Encrypt($product->id) ?>">
 

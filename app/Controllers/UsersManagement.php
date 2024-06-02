@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\UsersManagementModel;
 use CodeIgniter\HTTP\ResponseInterface;
+use DateTime;
 
 class UsersManagement extends BaseController
 {
@@ -118,20 +119,168 @@ class UsersManagement extends BaseController
         $users_model->insert($data);
 
         // send e-mail to user to finish the registration process, by setting a password
-        dd($this->_send_email($data));
+        $this->_send_email($data);
 
         return redirect()->to('/users_management');
     }
 
-    
+
     // -----------------------------------------------------------------------------------------------------------------
     // EDIT USER
     // -----------------------------------------------------------------------------------------------------------------
 
 
+    /**
+     * Displays the user editing form and handles form submission.
+     * 
+     * This method retrieves user data based on the provided encoded ID, decodes it,
+     * and fetches the corresponding user information from the database. If the user
+     * is found, it populates the user editing form with the retrieved data. If there
+     * are any validation errors from a previous form submission, they are also passed
+     * to the view for display. Additionally, it enables the Flatpickr library for
+     * date input fields in the form.
+     * 
+     * @param string $enc_id The encoded ID of the user to be edited.
+     * @return View The user editing form view or a redirect response.
+     */
     public function edit($enc_id)
     {
-        echo 'editar utilizador';
+        // decode id
+        $id = Decrypt($enc_id);
+        if (empty($id)) {
+            return redirect()->to('/users_management');
+        }
+
+        // get user data
+        $users_model = new UsersManagementModel();
+        $user = $users_model->find($id);
+
+        if (!$user) {
+            return redirect()->to('/users_management');
+        }
+
+        // get user roles
+        $user->roles = json_decode($user->roles)[0];
+
+        $data = [
+            'title' => 'Utilizadores',
+            'page'  => 'Editar utilizador',
+            'user'  => $user,
+            'validation_errors' => session()->getFlashdata('validation_errors')
+        ];
+
+        // flatpickr
+        $data['flatpickr'] = true;
+
+        return view('dashboard/users_management/edit_user_frm', $data);
+    }
+
+    /**
+     * Handles the submission of the user editing form.
+     * 
+     * This method validates the form input based on predefined validation rules.
+     * If the validation fails, it redirects back to the editing form with the input data
+     * and validation errors. Upon successful validation, it retrieves the user ID from
+     * the hidden input field, processes the input data, and updates the user information
+     * in the database. Finally, it redirects to the users management page.
+     * 
+     * @return RedirectResponse A redirect response to the users management page.
+     */
+    public function edit_user_submit()
+    {
+        // form validation
+        $validation = $this->validate($this->_edit_user_validation());
+
+        if (!$validation) {
+            return redirect()->back()->withInput()->with('validation_errors', $this->validator->getErrors());
+        }
+
+        // get user id
+        $id = Decrypt($this->request->getPost('hidden_id'));
+        if (!$id) {
+            return redirect()->to('/users_management');
+        }
+
+        // get input data
+        $role = $this->request->getPost('select_role');
+        $active = $this->request->getPost('radio_active');
+        $blocked_until = $this->request->getPost('date_blocked_until');
+
+        // prepare blocked until, if not empty
+        if (!empty($blocked_until)) {
+            $tmp = new DateTime($blocked_until);
+            $tmp->setTime(23, 59, 59);
+
+            $blocked_until = $tmp->format('Y-m-d H:i:s');
+        } else {
+            $blocked_until = null;
+        }
+
+        // update user
+        $users_model = new UsersManagementModel();
+        $users_model->update($id, [
+            'roles'         => json_encode([$role]),
+            'active'        => $active,
+            'blocked_until' => $blocked_until,
+            'updated_at'    => date('Y-m-d H:i:s')
+        ]);
+
+        // redirect to users management
+        return redirect()->to('/users_management');
+    }
+
+    /**
+     * Deletes a user from the system.
+     * 
+     * This method deletes a user by marking their record as deleted in the database.
+     * It first checks if the user ID is valid. If the ID is valid, it updates the user's
+     * record in the database by setting the 'deleted_at' timestamp to the current date and time.
+     * Finally, it redirects to the users management page.
+     * 
+     * @param string $enc_id The encrypted ID of the user to be deleted.
+     * @return RedirectResponse A redirect response to the users management page.
+     */
+    public function delete_user($enc_id)
+    {
+        // check if user id is valid
+        $id = Decrypt($enc_id);
+        if (!$id) {
+            return redirect()->to('/users_management');
+        }
+
+        $users_model = new UsersManagementModel();
+        $users_model->update($id, [
+            'deleted_at' => date('Y-m-d H:i:s')
+        ]);
+
+        return redirect()->to('/users_management');
+    }
+
+    /**
+     * Recovers a deleted user.
+     * 
+     * This method recovers a previously deleted user by removing the 'deleted_at' timestamp from their record
+     * in the database. It first checks if the provided user ID is valid. If the ID is valid and corresponds to
+     * a deleted user, it updates the user's record in the database by setting the 'deleted_at' field to null,
+     * effectively marking the user as active again. Finally, it redirects to the users management page.
+     * 
+     * @param string $enc_id The encrypted ID of the user to be recovered.
+     * @return RedirectResponse A redirect response to the users management page.
+     */
+    public function recover_user($enc_id)
+    {
+        // check if user id is valid
+        $id = Decrypt($enc_id);
+        if (!$id) {
+            return redirect()->to('/users_management');
+        }
+
+        $users_model = new UsersManagementModel();
+        $users_model->update($id, [
+            'deleted_at' => null
+        ]);
+
+        return redirect()->to('/users_management');
     }
 
 
@@ -139,7 +288,7 @@ class UsersManagement extends BaseController
     // PRIVATE METHODS
     // -----------------------------------------------------------------------------------------------------------------
 
-    
+
     /**
      * Prepares user data for further processing.
      * 
@@ -267,5 +416,43 @@ class UsersManagement extends BaseController
 
         // send e-mail and return true or false
         return $email->send();
+    }
+
+    /**
+     * Retrieves validation rules for editing user information.
+     * 
+     * This method defines validation rules for editing user information, including
+     * the user's role, active status, and optional blocked until date. The rules are
+     * defined for form validation purposes to ensure the integrity of user data updates.
+     * 
+     * @return array An array containing validation rules for editing user information.
+     */
+    private function _edit_user_validation()
+    {
+        return [
+            'select_role' => [
+                'label'  => 'Cargo',
+                'rules'  => 'required|in_list[admin,user]',
+                'errors' => [
+                    'required' => 'O campo {field} é obrigatório',
+                    'in_list'  => 'O campo {field} deve conter um valor válido'
+                ]
+            ],
+            'radio_active' => [
+                'label'  => 'Utilizador ativo',
+                'rules'  => 'required|in_list[0,1]',
+                'errors' => [
+                    'required' => 'O campo {field} é obrigatório',
+                    'in_list'  => 'O campo {field} deve conter um valor válido'
+                ]
+            ],
+            'date_blocked_until' => [
+                'label'  => 'Bloquear utilizador até',
+                'rules'  => 'permit_empty|valid_date[Y-m-d]',
+                'errors' => [
+                    'required' => 'O campo {field} deve conter uma data válida no formato {param}'
+                ]
+            ]
+        ];
     }
 }

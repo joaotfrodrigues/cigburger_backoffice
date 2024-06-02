@@ -9,6 +9,18 @@ use DateTime;
 
 class Sales extends BaseController
 {
+    /**
+     * Displays the sales dashboard.
+     * 
+     * This method retrieves sales data and displays it on the sales dashboard. It first checks if there's a date interval
+     * filter set in the session, and if so, it includes this information in the view data. Then, it fetches sales data
+     * using the SalesModel and applies any date interval filter. It enables DataTables and ApexCharts for interactive
+     * data visualization. Finally, it prepares the sales data for chart display using the '_prepare_sales_for_chart'
+     * method and passes this data along with other necessary information to the view.
+     * 
+     * @return View The View from the sales dashboard
+     */
+
     public function index()
     {
         $data = [

@@ -3,7 +3,7 @@
 <?= $this->include('partials/page_title') ?>
 
 <div class="content-box">
-    <?= form_open_multipart('/products/new_submit', ['novalidate' => true]) ?>
+    <?= form_open_multipart('/products/new_submit') ?>
 
     <div class="row">
 
