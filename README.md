@@ -73,6 +73,7 @@ To set up the project, follow these steps:
         define('MAIL_PORT',       1025);
         define('MAIL_ENCRYPTION', '');
         ```
+    - If you're developing locally and don't have an SMTP server configured, you can use software like MailCatcher to catch emails as if they were sent.
 
 7. **Start the Development Server:**
     ```bash
