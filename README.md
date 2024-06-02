@@ -58,12 +58,28 @@ To set up the project, follow these steps:
       The `CI_ENVIRONMENT` variable can be set to either `development` or `production` depending on your needs.
     - Update the `APP_BASEURL` variable in the `.env` file to reflect the correct base URL for the application.
 
-6. **Start the Development Server:**
+6. **Configure Email Settings:**
+    - Edit the `Constants.php` file in the `app/Config` directory.
+    - Set up the following email variables:
+        ```php
+        // SMTP
+        define('MAIL_FROM',       'cigburger@cigburger.com');
+        define('MAIL_FROM_NAME',  'CigBurger');
+
+        define('MAIL_PROTOCOL',   'smtp');
+        define('MAIL_HOST',       'localhost');
+        define('MAIL_USER',       '');
+        define('MAIL_PASS',       '');
+        define('MAIL_PORT',       1025);
+        define('MAIL_ENCRYPTION', '');
+        ```
+
+7. **Start the Development Server:**
     ```bash
     php spark serve
     ```
 
-7. **Access the Application:**
+8. **Access the Application:**
     - Open your web browser and go to [http://localhost/cigburger_backoffice/public/](http://localhost/cigburger_backoffice/public/)
 
 ## 📡 API Endpoints<a name="api-endpoints"></a>

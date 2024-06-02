@@ -65,7 +65,7 @@ class UsersTable extends Migration
             ],
             'code' => [
                 'type' => 'VARCHAR',
-                'constraint' => 20,
+                'constraint' => 100,
                 'null' => true
             ],
             'last_login' => [

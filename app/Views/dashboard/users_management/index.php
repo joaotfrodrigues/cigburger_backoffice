@@ -2,6 +2,10 @@
 <?= $this->section('content') ?>
 <?= $this->include('partials/page_title') ?>
 
+<div class="mb-3">
+    <a href="<?= site_url('/users_management/new_user') ?>" class="btn btn-outline-secondary"><i class="fa-solid fa-user-plus me-2"></i>Novo Utilizador</a>
+</div>
+
 <div class="container-fluid mb-5">
     <div class="row">
         <div class="col content-box p-4">

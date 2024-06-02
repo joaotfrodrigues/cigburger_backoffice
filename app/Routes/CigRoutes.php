@@ -60,4 +60,6 @@ $routes->post('/sales/filter_date_interval',                           'Sales::f
 
 // users management
 $routes->get('/users_management',                                      'UsersManagement::index');
+$routes->get('/users_management/new_user',                             'UsersManagement::new_user');
 $routes->get('/users_management/edit/(:alphanum)',                     'UsersManagement::edit/$1');
+$routes->post('/users_management/new_user_submit',                     'UsersManagement::new_user_submit');

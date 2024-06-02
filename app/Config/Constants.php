@@ -98,7 +98,7 @@ define('EVENT_PRIORITY_HIGH', 10);
 // -------------------------------
 
 // APP
-define('APP_NAME', 'CigBurger');
+define('APP_NAME',    'CigBurger');
 define('APP_VERSION', '1.0.0');
 
 // MYSQL
@@ -111,6 +111,17 @@ define('DB_PASS', 'ren7hICOqosAqu8Es7wagIjuD6KI4o');
 define('ENCRYPTION_KEY', 'pQa50gITVuVZpFXDRXrB7xzhXIrx3LLU');
 
 // API
-define('API_ACTIVE', true);
-define('API_VERSION', '1.0.0');
+define('API_ACTIVE',      true);
+define('API_VERSION',     '1.0.0');
 define('API_DEBUG_LEVEL', 0); // 0 = do not send error messages | 1 = send error messages
+
+// SMTP
+define('MAIL_FROM',       'cigburger@cigburger.com');
+define('MAIL_FROM_NAME',  'CigBurger');
+
+define('MAIL_PROTOCOL',   'smtp');
+define('MAIL_HOST',       'localhost');
+define('MAIL_USER',       '');
+define('MAIL_PASS',       '');
+define('MAIL_PORT',       1025);
+define('MAIL_ENCRYPTION', '');
