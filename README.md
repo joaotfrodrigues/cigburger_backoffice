@@ -41,6 +41,13 @@ To set up the project, follow these steps:
 4. **Database Setup**
     1. **Create a Database**
         - Update the `Constants.php` file with your database settings.
+            ```php
+            // MYSQL
+            define('DB_HOST', 'localhost');
+            define('DB_NAME', 'db_cig_burger');
+            define('DB_USER', 'user_db_cig_burger');
+            define('DB_PASS', 'ren7hICOqosAqu8Es7wagIjuD6KI4o');
+            ```
     2. **Initialize Database Structure:**
         - Open your terminal in the project directory.
         - Run the command:
