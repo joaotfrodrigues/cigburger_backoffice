@@ -267,6 +267,67 @@ class Auth extends BaseController
         return view('auth/welcome');
     }
 
+    /**
+     * Displays the user profile page.
+     * 
+     * This method retrieves the currently logged-in user's data from the database, validates the user, and prepares the data 
+     * for display on the profile page. If the user data is not found, it redirects to the home page. The user's roles are 
+     * converted from JSON to a string for easier display. It also includes any form validation errors that may have 
+     * occurred during previous requests.
+     * 
+     * @return View A view containing the profile page
+     */
+    public function profile()
+    {
+        // get user data
+        $user_model = new UserModel();
+        $user = $user_model->find(session('user')['id']);
+
+        // check if user is valid
+        if (!$user) {
+            return redirect()->to('/');
+        }
+
+        // transform the json to string | ['admin'] => 'admin'
+        $user->role = json_decode($user->roles)[0];
+
+        // display profile page
+        $data = [
+            'title' => 'Perfil do Utilizador',
+            'page'  => 'Perfil do Utilizador',
+            'user'  => $user
+        ];
+
+        // form validation
+        $data['validation_errors'] = session()->getFlashdata('validation_errors');
+
+        return view('auth/profile', $data);
+    }
+
+    public function profile_submit()
+    {
+        // form validatiom
+        $validation = $this->validate($this->_profile_form_validation());
+
+        if (!$validation) {
+            return redirect()->back()->withInput()->with('validation_errors', $this->validator->getErrors());
+        }
+
+        echo 'profile submit';
+    }
+
+    public function change_password_submit()
+    {
+        // form validatiom
+        $validation = $this->validate($this->_profile_change_password_form_validation());
+
+        if (!$validation) {
+            return redirect()->back()->withInput()->with('validation_errors', $this->validator->getErrors());
+        }
+
+        echo 'change password submit';
+    }
+
 
     // -----------------------------------------------------------------------------------------------------------------
     // PRIVATE METHODS
@@ -304,6 +365,90 @@ class Auth extends BaseController
                     'matches'  => 'O campo {field} deve ser igual ao campo Senha',
                 ],
             ],
+        ];
+    }
+
+    /**
+     * Defines the validation rules for the profile form.
+     * 
+     * This method returns an array of validation rules for the profile form fields. It ensures that the user's name, email,
+     * and phone number meet specific requirements such as being required, having valid lengths, and matching certain patterns.
+     * 
+     * @return array An array containing the validation rules for the profile form.
+     */
+    private function _profile_form_validation()
+    {
+        return [
+            'text_name' => [
+                'label'  => 'Nome do utilizador',
+                'rules'  => 'required|min_length[3]|max_length[50]',
+                'errors' => [
+                    'required'   => 'O campo {field} é obrigatório',
+                    'min_length' => 'O campo {field} deve ter no mínimo {param caracteres}',
+                    'max_length' => 'O campo {field} deve ter no máximo {param caracteres}',
+                ]
+            ],
+            'text_email' => [
+                'label'  => 'E-mail',
+                'rules'  => 'required|valid_email|min_length[3]|max_length[50]',
+                'errors' => [
+                    'required'    => 'O campo {field} é obrigatório',
+                    'valid_email' => 'O campo {field} deve conter um e-mail válido',
+                    'min_length'  => 'O campo {field} deve ter no mínimo {param caracteres}',
+                    'max_length'  => 'O campo {field} deve ter no máximo {param caracteres}',
+                ]
+            ],
+            'text_phone' => [
+                'label'  => 'Telefone',
+                'rules'  => 'required|regex_match[/^[9]{1}\d{8}$/]',
+                'errors' => [
+                    'required'    => 'O campo {field} é obrigatório',
+                    'regex_match' => 'O campo {field} deve conter um número de telefone válido',
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * Defines the validation rules for the profile change password form.
+     * 
+     * This method returns an array of validation rules for changing the password in the profile form.
+     * It ensures that the passwords meet specific requirements such as being required, having valid lengths,
+     * matching certain patterns, and ensuring the new password confirmation matches the new password.
+     * 
+     * @return array An array containing the validation rules for the profile change password form.
+     */
+    private function _profile_change_password_form_validation()
+    {
+        return [
+            'text_password' => [
+                'label' => 'Senha',
+                'rules' => 'required|min_length[8]|max_length[16]|regex_match[/(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*/]',
+                'errors' => [
+                    'required' => 'O campo {field} é obrigatório.',
+                    'min_length' => 'O campo {field} deve ter no mínimo {param} caracteres.',
+                    'max_length' => 'O campo {field} deve ter no máximo {param} caracteres.',
+                    'regex_match' => 'O campo {field} deve conter pelo menos uma letra maiúscula, uma minúscula e um algarismo.'
+                ]
+            ],
+            'text_new_password' => [
+                'label' => 'Nova senha',
+                'rules' => 'required|min_length[8]|max_length[16]|regex_match[/(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*/]',
+                'errors' => [
+                    'required' => 'O campo {field} é obrigatório.',
+                    'min_length' => 'O campo {field} deve ter no mínimo {param} caracteres.',
+                    'max_length' => 'O campo {field} deve ter no máximo {param} caracteres.',
+                    'regex_match' => 'O campo {field} deve conter pelo menos uma letra maiúscula, uma minúscula e um algarismo.'
+                ]
+            ],
+            'text_new_password_confirm' => [
+                'label' => 'Confirmar nova senha',
+                'rules' => 'required|matches[text_new_password]',
+                'errors' => [
+                    'required' => 'O campo {field} é obrigatório.',
+                    'matches' => 'O campo {field} deve ser igual ao campo Nova senha.'
+                ]
+            ]
         ];
     }
 }

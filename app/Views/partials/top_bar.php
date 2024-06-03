@@ -7,8 +7,11 @@
         </a>
     </div>
 
-    <div>
-        <i class="fa-solid fa-user me-2"></i><?= session()->user['name'] ?>
+    <div class="d-flex align-items-center">
+        <div class="me-3">
+            <i class="fa-solid fa-user me-2"></i><?= session()->user['name'] ?>
+        </div>
+        <a href="<?= site_url('/auth/profile') ?>" class="btn btn-outline-secondary"><i class="fa-solid fa-user-gear"></i></a>
         <i class="fa-solid fa-ellipsis-vertical mx-3"></i>
         <a href="<?= site_url('/auth/logout') ?>"><i class="fa-solid fa-right-from-bracket me-2"></i>Sair</a>
     </div>

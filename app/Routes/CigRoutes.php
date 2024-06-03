@@ -15,6 +15,9 @@ $routes->get('/auth/logout',                                          'Auth::log
 $routes->get('/auth/finish_registration/(:alphanum)',                 'Auth::finish_registration/$1');
 $routes->get('/auth/define_password',                                 'Auth::define_password');
 $routes->get('/auth/welcome',                                         'Auth::welcome');
+$routes->get('/auth/profile',                                         'Auth::profile');
+$routes->post('/auth/profile_submit',                                 'Auth::profile_submit');
+$routes->post('/auth/change_password_submit',                         'Auth::change_password_submit');
 $routes->post('/auth/login_submit',                                   'Auth::login_submit');
 $routes->post('/auth/define_password_submit',                         'Auth::define_password_submit');
 
