@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Filters\AdminRoleFilter;
 use App\Filters\ApiKeyAuth;
 use App\Filters\UserIsLoggedIn;
 use CodeIgniter\Config\Filters as BaseFilters;
@@ -27,17 +28,18 @@ class Filters extends BaseFilters
      * or [filter_name => [classname1, classname2, ...]]
      */
     public array $aliases = [
-        'csrf'          => CSRF::class,
-        'toolbar'       => DebugToolbar::class,
-        'honeypot'      => Honeypot::class,
-        'invalidchars'  => InvalidChars::class,
-        'secureheaders' => SecureHeaders::class,
-        'cors'          => Cors::class,
-        'forcehttps'    => ForceHTTPS::class,
-        'pagecache'     => PageCache::class,
-        'performance'   => PerformanceMetrics::class,
-        'userisloggedin' => UserIsLoggedIn::class,
-        'apiauth'    => ApiKeyAuth::class
+        'csrf'            => CSRF::class,
+        'toolbar'         => DebugToolbar::class,
+        'honeypot'        => Honeypot::class,
+        'invalidchars'    => InvalidChars::class,
+        'secureheaders'   => SecureHeaders::class,
+        'cors'            => Cors::class,
+        'forcehttps'      => ForceHTTPS::class,
+        'pagecache'       => PageCache::class,
+        'performance'     => PerformanceMetrics::class,
+        'userisloggedin'  => UserIsLoggedIn::class,
+        'apiauth'         => ApiKeyAuth::class,
+        'adminrole'       => AdminRoleFilter::class
     ];
 
     /**

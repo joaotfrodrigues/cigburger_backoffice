@@ -111,3 +111,29 @@ if (!function_exists('set_selected')) {
         return "";
     }
 }
+
+if (!function_exists('menu_is_available')) {
+    /**
+     * Checks if the menu is available for the given roles.
+     *
+     * This function takes a comma-separated string of roles and checks if any of these
+     * roles are present in the user's roles stored in the session. If a match is found,
+     * it returns true, indicating the menu is available for the user.
+     *
+     * @param string $roles Comma-separated string of roles to check against the user's roles.
+     * @return bool Returns true if any of the given roles are present in the user's roles, false otherwise.
+     */
+    function menu_is_available($roles)
+    {
+        $roles = explode(',', $roles);
+        $user_roles = json_decode(session('user')['roles']);
+
+        foreach ($user_roles as $role) {
+            if (in_array($role, $roles)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}

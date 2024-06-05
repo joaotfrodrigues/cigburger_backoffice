@@ -10,47 +10,6 @@ use CodeIgniter\HTTP\ResponseInterface;
 class Api extends BaseController
 {
     /**
-     * Creates API credentials for a project.
-     * 
-     * This function generates API credentials for a project by accepting a project ID
-     * and API key as parameters. It first checks if the parameters are valid and then
-     * displays the project ID, API key, and hashed API key. It then generates encrypted
-     * credentials using the Encrypter service provided by CodeIgniter and displays the
-     * encrypted data as a hexadecimal string.
-     * 
-     * @param string $project_id The project ID for which API credentials are to be created.
-     * @param string $api_key The API key to be associated with the project.
-     * 
-     * @return void
-     */
-    public function create_api_credentials($project_id, $api_key)
-    {
-        if (empty($project_id) || empty($api_key)) {
-            echo 'Invalid parameters';
-            return;
-        }
-
-        echo '<pre>';
-        echo "project_id: $project_id<br>";
-        echo "api_key: $api_key<br>";
-        echo 'api_key (hash): ' . password_hash($api_key, PASSWORD_DEFAULT) . '<br>';
-
-        $data = json_encode([
-            'project_id' => $project_id,
-            'api_key' => $api_key
-        ]);
-
-        $encrypter = \Config\Services::encrypter();
-        $encrypted_data = bin2hex($encrypter->encrypt($data));
-
-        echo $encrypted_data;
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // API METHODS
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
      * Retrieves the API status.
      * 
      * This API method retrieves the status of the API. It first validates the request
