@@ -301,9 +301,27 @@ class Auth extends BaseController
         // form validation
         $data['validation_errors'] = session()->getFlashdata('validation_errors');
 
+        // server error
+        $data['server_error'] = session()->getFlashdata('server_error');
+
+        // success profile message
+        $data['profile_success'] = session()->getFlashdata('profile_success');
+
+        // success password message
+        $data['password_success'] = session()->getFlashdata('password_success');
+
         return view('auth/profile', $data);
     }
 
+    /**
+     * Handles the form submission for updating the user profile.
+     * 
+     * This method validates the profile form inputs, checks for duplicate email addresses,
+     * updates the user data in the database, updates the session data, and redirects back
+     * to the profile page with appropriate messages.
+     *
+     * @return RedirectResponse
+     */
     public function profile_submit()
     {
         // form validatiom
@@ -313,9 +331,46 @@ class Auth extends BaseController
             return redirect()->back()->withInput()->with('validation_errors', $this->validator->getErrors());
         }
 
-        echo 'profile submit';
+        $user_model = new UserModel();
+
+        // check if there's another user with the same e-mail address
+        $check_email = $user_model->where('id !=', session('user')['id'])
+            ->where('email', $this->request->getPost('text_email'))
+            ->get()
+            ->getResultArray();
+
+        if ($check_email) {
+            return redirect()->back()->withInput()->with('server_error', 'Já existe outro utilizador com o mesmo e-mail');
+        }
+
+        // update user data
+        $user_model->update(session('user')['id'], [
+            'name'       => $this->request->getPost('text_name'),
+            'email'      => $this->request->getPost('text_email'),
+            'phone'      => $this->request->getPost('text_phone'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+
+        // update session
+        $user = session('user');
+        $user['name']  = $this->request->getPost('text_name');
+        $user['email'] = $this->request->getPost('text_email');
+        $user['phone'] = $this->request->getPost('text_phone');
+
+        session()->set('user', $user);
+
+        // redirect to profile page
+        return redirect()->to('/auth/profile')->with('profile_success', true);
     }
 
+    /**
+     * Handles the form submission for changing the user password.
+     * 
+     * This method validates the change password form inputs, checks if the current password is correct,
+     * updates the user password in the database, and redirects back to the profile page with appropriate messages.
+     *
+     * @return RedirectResponse
+     */
     public function change_password_submit()
     {
         // form validatiom
@@ -325,7 +380,173 @@ class Auth extends BaseController
             return redirect()->back()->withInput()->with('validation_errors', $this->validator->getErrors());
         }
 
-        echo 'change password submit';
+        // check if current password is correct
+        $user_model = new UserModel();
+
+        $user = $user_model->find(session('user')['id']);
+        $password = $this->request->getPost('text_password');
+
+        if (!password_verify($password, $user->passwrd)) {
+            return redirect()->back()->withInput()->with('validation_errors', ['text_password' => 'Senha atual está incorreta']);
+        }
+
+        // update user password
+        $new_password = $this->request->getPost('text_new_password');
+        $user_model->update(session('user')['id'], [
+            'passwrd' => password_hash($new_password, PASSWORD_DEFAULT),
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+
+        // redirect to profile page
+        return redirect()->to('/auth/profile')->with('password_success', true);
+    }
+
+    /**
+     * Displays the forgot password form.
+     * 
+     * This method loads the forgot password form, allowing users to reset their password.
+     * It also loads the list of restaurants to populate the dropdown menu for restaurant selection.
+     * 
+     * @return View The forgot password form view with restaurant data and validation errors, if any.
+     */
+    public function forgot_password()
+    {
+        // load restaurants
+        $restaurants_model = new RestaurantModel();
+        $restaurants = $restaurants_model->select('id, name')
+            ->findAll();
+
+        $data['restaurants'] = $restaurants;
+
+        // form validation
+        $data['validation_errors'] = session()->getFlashdata('validation_errors');
+
+        return view('/auth/forgot_password_frm', $data);
+    }
+
+    /**
+     * Handles the submission of the forgot password form.
+     * 
+     * This method validates the input data from the forgot password form.
+     * If the validation fails, it redirects back to the form with validation errors.
+     * If the email exists, it generates a random hash code for the password reset link (purl) 
+     * and sends an email to the user with instructions to reset the password.
+     * If the email does not exist, it still displays a success message to avoid revealing 
+     * information about the existence of the email.
+     * 
+     * @return View The view for the forgot password success page.
+     */
+    public function forgot_password_submit()
+    {
+        // form validation
+        $validation = $this->validate($this->_forgot_password_validation_rules());
+
+        if (!$validation) {
+            return redirect()->back()->withInput()->with('validation_errors', $this->validator->getErrors());
+        }
+
+        // check if e-mail exists
+        $id_restaurant = Decrypt($this->request->getPost('select_restaurant'));
+        $email = $this->request->getPost('text_email');
+
+        $user_model = new UserModel();
+        $user = $user_model->where('email', $email)
+            ->where('id_restaurant', $id_restaurant)
+            ->first();
+
+        // always show success message to avoid give information about the existance of the e-mail
+        if (!$user) {
+            return view('auth/forgot_password_success');
+        }
+
+        // generate random hash code for purl
+        $code = bin2hex(random_bytes(16));
+
+        // update user code
+        $user_model->update($user->id, [
+            'code'       => $code,
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+
+        $data = [
+            'id'    => $user->id,
+            'name'  => $user->name,
+            'email' => $user->email,
+            'code'  => $code
+        ];
+
+        // send e-mail to recover the password
+        $this->_send_email($data);
+
+        return view('auth/forgot_password_success');
+    }
+
+    /**
+     * Displays the redefine password form if the purl code is valid.
+     * 
+     * This method checks if a purl code is provided and if it exists in the database.
+     * If the purl code is missing or invalid, it redirects to the login page.
+     * If the purl code is valid, it displays the redefine password form.
+     * 
+     * @param string|null $purl_code The unique password reset code sent to the user's email.
+     * 
+     * @return View The view for the redefine password form.
+     */
+    public function redefine_password($purl_code = null)
+    {
+        // check if purl code is empty
+        if (empty($purl_code)) {
+            return redirect()->to('/auth/login');
+        }
+
+        // check if purl code exists
+        $user_model = new UserModel();
+        $user = $user_model->where('code', $purl_code)
+            ->first();
+
+        if (!$user) {
+            return redirect()->to('/auth/login');
+        }
+
+        // display redefine password page
+        $data['purl_code'] = $purl_code;
+        $data['validation_errors'] = session()->getFlashdata('validation_errors');
+
+        return view('auth/redefine_password_frm', $data);
+    }
+
+    /**
+     * Handles the submission of the redefine password form.
+     * 
+     * Validates the form inputs, checks the reset password code,
+     * updates the user password if the code is valid, and displays the success page.
+     * If validation fails or the code is invalid, redirects back with appropriate error messages.
+     * 
+     * @return View
+     */
+    public function redefine_password_submit()
+    {
+        // form validation
+        $validation = $this->validate($this->_define_reset_password_validation_rules());
+
+        if (!$validation) {
+            return redirect()->back()->withInput()->with('validation_errors', $this->validator->getErrors());
+        }
+
+        // update user password
+        $user_model = new UserModel();
+
+        $code = $this->request->getPost('purl_code');
+        $password = $this->request->getPost('text_password');
+
+        $user_model->where('code', $code)
+            ->set('passwrd', password_hash($password, PASSWORD_DEFAULT))
+            ->set('code', null)
+            ->set('updated_at', date('Y-m-d H:i:s'))
+            ->update();
+
+        // display success page
+        return view('auth/redefine_password_success');
     }
 
 
@@ -447,6 +668,108 @@ class Auth extends BaseController
                 'errors' => [
                     'required' => 'O campo {field} é obrigatório.',
                     'matches' => 'O campo {field} deve ser igual ao campo Nova senha.'
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Defines the validation rules for the forgot password form.
+     * 
+     * This method specifies the validation rules for the forgot password form fields,
+     * including the selection of a restaurant and the input of an email address.
+     * 
+     * @return array An array containing validation rules for each form field.
+     */
+    private function _forgot_password_validation_rules()
+    {
+        return [
+            'select_restaurant' => [
+                'label'  => 'Restaurante',
+                'rules'  => 'required',
+                'errors' => [
+                    'required' => 'O campo {field} é obrigatório'
+                ]
+            ],
+            'text_email' => [
+                'label'  => 'E-mail',
+                'rules'  => 'required|valid_email|min_length[5]|max_length[50]',
+                'errors' => [
+                    'required'    => 'O campo {field} é obrigatório',
+                    'valid_email' => 'O campo {field} deve conter um e-mail válido',
+                    'min_length'  => 'O campo {field} deve ter no mínimo {param} caracteres',
+                    'max_length'  => 'O campo {field} deve ter no máximo {param} caracteres',
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Sends a registration completion email to the user.
+     * 
+     * This method prepares a personal URL (purl) for the user to complete their registration 
+     * and configures an email with the provided data. It uses the CodeIgniter email service 
+     * to send the email.
+     * 
+     * @param array $data An associative array containing the necessary data for the email.
+     *                    Expected keys:
+     *                    - 'code'  : The unique code for the user's registration.
+     *                    - 'email' : The recipient's email address.
+     *                    - 'name'  : The name of the recipient.
+     * 
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
+    private function _send_email($data)
+    {
+        // prepare purl - personal url
+        $data['purl'] = site_url('/auth/redefine_password/' . $data['code']);
+
+        // config e-mail
+        $email = \Config\Services::email();
+        $email->setFrom(MAIL_FROM, MAIL_FROM_NAME);
+        $email->setTo($data['email']);
+        $email->setSubject('CigBurger - Recuperação de senha');
+        $email->setMessage(view('emails/email_recover_password', $data));
+
+        // send e-mail and return true or false
+        return $email->send();
+    }
+
+    /**
+     * Defines validation rules for the reset password form.
+     * 
+     * This private method returns an array of validation rules and error messages
+     * for the reset password form. The rules ensure that the provided password 
+     * meets the required criteria and that the confirmation password matches.
+     * 
+     * @return array An array of validation rules and error messages.
+     */
+    private function _define_reset_password_validation_rules()
+    {
+        return [
+            'purl_code' => [
+                'label'  => '',
+                'rules'  => 'required',
+                'errors' => [
+                    'required' => 'Aconteceu um erro na submissão do formulário'
+                ]
+            ],
+            'text_password' => [
+                'label'  => 'Senha',
+                'rules'  => 'required|min_length[8]|max_length[16]|regex_match[/(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*/]',
+                'errors' => [
+                    'required'    => 'O campo {field} é obrigatório',
+                    'min_length'  => 'O campo {field} deve ter no mínimo {param} caracteres',
+                    'max_length'  => 'O campo {field} deve ter no máximo {param} caracteres',
+                    'regex_match' => 'O campo {field} deve conter pelo menos uma letra maiúscula, uma minúscula e um algarimo',
+                ]
+            ],
+            'text_password_confirm' => [
+                'label'  => 'Confirmar Senha',
+                'rules'  => 'required|matches[text_password]',
+                'errors' => [
+                    'required' => 'O campo {field} é obrigatório',
+                    'matches' => 'O campo {field} deve ser igual ao campo Senha'
                 ]
             ]
         ];

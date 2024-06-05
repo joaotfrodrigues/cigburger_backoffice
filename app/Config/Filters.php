@@ -82,6 +82,10 @@ class Filters extends BaseFilters
                     '/auth/define_password',
                     '/auth/define_password_submit',
                     '/auth/welcome',
+                    '/auth/forgot_password_submit',
+                    '/auth/forgot_password',
+                    '/auth/redefine_password/*',
+                    '/auth/redefine_password_submit',
                     '/api/*'
                 ]
             ],

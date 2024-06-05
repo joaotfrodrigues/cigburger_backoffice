@@ -20,7 +20,7 @@ class UsersSeeder extends Seeder
             [
                 'id_restaurant' => 1,
                 'username' => 'admin_rest1',
-                'passwrd' => password_hash('admin_rest1', PASSWORD_DEFAULT),
+                'passwrd' => password_hash('Aa123456', PASSWORD_DEFAULT),
                 'name' => 'Administrador Restaurante 1',
                 'email' => 'admin_rest1@gmail.com',
                 'phone' => '990000101',
@@ -31,7 +31,7 @@ class UsersSeeder extends Seeder
             [
                 'id_restaurant' => 1,
                 'username' => 'user_rest1',
-                'passwrd' => password_hash('user_rest1', PASSWORD_DEFAULT),
+                'passwrd' => password_hash('Aa123456', PASSWORD_DEFAULT),
                 'name' => 'Colaborador Restaurante 1',
                 'email' => 'user_rest1@gmail.com',
                 'phone' => '990001101',
@@ -44,7 +44,7 @@ class UsersSeeder extends Seeder
             [
                 'id_restaurant' => 2,
                 'username' => 'admin_rest2',
-                'passwrd' => password_hash('admin_rest2', PASSWORD_DEFAULT),
+                'passwrd' => password_hash('Aa123456', PASSWORD_DEFAULT),
                 'name' => 'Administrador Restaurante 2',
                 'email' => 'admin_rest2@gmail.com',
                 'phone' => '990000202',
@@ -55,7 +55,7 @@ class UsersSeeder extends Seeder
             [
                 'id_restaurant' => 2,
                 'username' => 'user_rest2',
-                'passwrd' => password_hash('user_rest2', PASSWORD_DEFAULT),
+                'passwrd' => password_hash('Aa123456', PASSWORD_DEFAULT),
                 'name' => 'Colaborador Restaurante 2',
                 'email' => 'user_rest2@gmail.com',
                 'phone' => '990002202',
@@ -68,7 +68,7 @@ class UsersSeeder extends Seeder
             [
                 'id_restaurant' => 3,
                 'username' => 'admin_rest3',
-                'passwrd' => password_hash('admin_rest3', PASSWORD_DEFAULT),
+                'passwrd' => password_hash('Aa123456', PASSWORD_DEFAULT),
                 'name' => 'Administrador Restaurante 3',
                 'email' => 'admin_rest3@gmail.com',
                 'phone' => '990000303',
@@ -79,7 +79,7 @@ class UsersSeeder extends Seeder
             [
                 'id_restaurant' => 3,
                 'username' => 'user_rest3',
-                'passwrd' => password_hash('user_rest3', PASSWORD_DEFAULT),
+                'passwrd' => password_hash('Aa123456', PASSWORD_DEFAULT),
                 'name' => 'Colaborador Restaurante 3',
                 'email' => 'user_rest3@gmail.com',
                 'phone' => '990003303',

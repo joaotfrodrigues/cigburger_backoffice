@@ -9,17 +9,23 @@ $routes = Services::routes();
 // main
 $routes->get('/',                                                     'Main::index');
 
-// auth
+// auth - GET
 $routes->get('/auth/login',                                           'Auth::login');
 $routes->get('/auth/logout',                                          'Auth::logout');
 $routes->get('/auth/finish_registration/(:alphanum)',                 'Auth::finish_registration/$1');
 $routes->get('/auth/define_password',                                 'Auth::define_password');
 $routes->get('/auth/welcome',                                         'Auth::welcome');
 $routes->get('/auth/profile',                                         'Auth::profile');
+$routes->get('/auth/forgot_password',                                 'Auth::forgot_password');
+$routes->get('/auth/redefine_password/(:alphanum)',                   'Auth::redefine_password/$1');
+
+// auth - POST
 $routes->post('/auth/profile_submit',                                 'Auth::profile_submit');
 $routes->post('/auth/change_password_submit',                         'Auth::change_password_submit');
 $routes->post('/auth/login_submit',                                   'Auth::login_submit');
 $routes->post('/auth/define_password_submit',                         'Auth::define_password_submit');
+$routes->post('/auth/forgot_password_submit',                         'Auth::forgot_password_submit');
+$routes->post('/auth/redefine_password_submit',                       'Auth::redefine_password_submit');
 
 // products
 $routes->get('/products',                                             'Products::index');

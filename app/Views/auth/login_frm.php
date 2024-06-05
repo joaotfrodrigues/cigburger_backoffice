@@ -34,7 +34,7 @@
         <?= form_close() ?>
 
         <div class="text-center">
-            <p><a href="#" class="login-link">Recuperar senha</a></p>
+            <p>Esqueceu a senha? <a href="<?= site_url('/auth/forgot_password') ?>" class="login-link">Recuperar senha</a></p>
         </div>
 
         <?php if (!empty($login_error)): ?>

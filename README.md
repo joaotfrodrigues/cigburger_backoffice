@@ -90,6 +90,16 @@ To set up the project, follow these steps:
 8. **Access the Application:**
     - Open your web browser and go to [http://localhost/cigburger_backoffice/public/](http://localhost/cigburger_backoffice/public/)
 
+### Default Backoffice Login Credentials
+
+**Restaurant:** `Restaurante 1`  
+**Username:** `admin_rest1`  
+**Password:** `Aa123456`
+
+**Restaurant:** `Restaurante 2`  
+**Username:** `admin_rest2`  
+**Password:** `Aa123456`
+
 ## 📡 API Endpoints<a name="api-endpoints"></a>
 
 ### 🚦 API Status

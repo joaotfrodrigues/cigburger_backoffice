@@ -32,8 +32,21 @@
                     <input type="text" name="text_phone" class="form-control" value="<?= old('text_phone', $user->phone) ?>">
                     <?= display_error('text_phone', $validation_errors) ?>
                 </div>
-                <button type="submit" class="btn btn-outline-success px-3"><i class="fa-solid fa-check me-2"></i>Salvar</button>
+                <button type="submit" class="btn btn-outline-success px-3"><i class="fa-solid fa-check me-2"></i>Atualizar</button>
                 <?= form_close() ?>
+
+                <?php if (!empty($profile_success)) : ?>
+                    <div class="alert alert-success mt-3">
+                        Dados de utilizador atualizados com sucesso!
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($server_error)) : ?>
+                    <div class="alert alert-danger mt-3">
+                        <?= $server_error ?>
+                    </div>
+                <?php endif; ?>
+
             </div>
         </div>
         <div class="col-12 col-lg-6 my-1">
@@ -56,8 +69,14 @@
                     <input type="password" name="text_new_password_confirm" class="form-control">
                     <?= display_error('text_new_password_confirm', $validation_errors) ?>
                 </div>
-                <button type="submit" class="btn btn-outline-success px-3"><i class="fa-solid fa-check me-2"></i>Salvar</button>
+                <button type="submit" class="btn btn-outline-success px-3"><i class="fa-solid fa-check me-2"></i>Atualizar</button>
                 <?= form_close() ?>
+
+                <?php if (!empty($password_success)) : ?>
+                    <div class="alert alert-success mt-3">
+                        Senha atualizada com sucesso!
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

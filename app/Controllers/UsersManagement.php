@@ -407,7 +407,7 @@ class UsersManagement extends BaseController
         // prepare purl - personal url
         $data['purl'] = site_url('/auth/finish_registration/' . $data['code']);
 
-        // config email
+        // config e-mail
         $email = \Config\Services::email();
         $email->setFrom(MAIL_FROM, MAIL_FROM_NAME);
         $email->setTo($data['email']);
